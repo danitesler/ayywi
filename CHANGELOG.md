@@ -12,6 +12,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[Checklist](#/checklist)**
+  An editable list to tick off: Enter adds, Backspace on an empty item removes, with a count and progress.
+
 - **[Find bar](#/find-bar)**
   Find text in a page with a match count, previous and next, match case and optional replace.
 
@@ -153,6 +156,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   No page listed the icons → an Icons page draws every icon name in each pack (Hugeicons, Lucide, Tabler Icons, Material Symbols, Feather), marks the ones a pack lacks, and shows how to load and pick a pack.
 
 ### Changed
+
+- **Docs**
+  The all-components guide repeated every recommendation → it keeps the first, with complete guidance on each component page.
 
 - **[Toast](#/toast)**
   One action button → any number of buttons (Open, then snooze times), each closing the toast.

@@ -306,6 +306,13 @@ A box for turning an option on or off, or for picking several items from a list.
 - JS: checkboxClass constant; checkboxSizeClass(size?) → string | undefined (the --sm / --lg class; md adds nothing)
 - A11y: A colour alone doesn't say what it means: keep the priority or status in the label too. Wrap it in a <label class="ayy-label"> with the text, or pair with <label for>. Indeterminate is announced as "mixed" automatically. Group related checkboxes in a <fieldset> with a <legend>.
 
+## Checklist (Forms)
+An editable list of items to tick off, with an optional completion count and progress.
+- Classes: `.ayy-checklist` `.ayy-checklist__header` `.ayy-checklist__count` `.ayy-checklist__progress` `.ayy-checklist__items` `.ayy-checklist__item` `.ayy-checklist__text` `.ayy-checklist__new` `.ayy-checklist__remove`
+- States: hover, focus, selected
+- JS: checklistProgress(items); checklistInsert(items, afterId, item); checklistRemove(items, id); checklistMove(items, id, delta); checklistUpdate(items, id, patch); checklistLabels.
+- A11y: The list and controls have accessible names; progress is named by the count. Enter adds, Backspace removes an empty item, arrows move focus and Alt+Arrow moves an item. Enter during IME composition is ignored.
+
 ## Radio (Forms)
 A set of options where exactly one can be chosen. It's built on native radio buttons, grouped under a legend.
 - Classes: `.ayy-radio` `.ayy-radio--sm` `.ayy-radio--lg` `.ayy-radio-group` `.ayy-radio-group--horizontal` `.ayy-radio-group--sm` `.ayy-radio-group--lg` `.ayy-radio-group__legend`

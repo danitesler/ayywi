@@ -33,6 +33,7 @@
 @import "../components/tag-input/tag-input.css" layer(ayywi.components);
 @import "../components/record-picker/record-picker.css" layer(ayywi.components);
 @import "../components/checkbox/checkbox.css" layer(ayywi.components);
+@import "../components/checklist/checklist.css" layer(ayywi.components);
 @import "../components/radio/radio.css" layer(ayywi.components);
 @import "../components/segmented-control/segmented-control.css" layer(ayywi.components);
 @import "../components/chip/chip.css" layer(ayywi.components);

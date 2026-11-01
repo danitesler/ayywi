@@ -784,3 +784,19 @@ test.describe("record picker", () => {
     await expect(page.getByRole("option", { name: "Ada Lovelace" })).toHaveAttribute("aria-selected", "true");
   });
 });
+
+test("React Checklist: items replaced by the parent win over the ones typed", async ({ page }) => {
+  await reactPage(page, `import { useState } from "react";
+    import { Checklist, Button } from "ayywi";
+    const start = [{ id: "a", text: "Passport", done: false }];
+    function App() {
+      const [items, setItems] = useState(start);
+      return <div><Checklist label="Packing list" items={items} onItemsChange={setItems} /><Button onClick={() => setItems(start)}>Reset</Button></div>;
+    }`);
+  await page.getByRole("textbox", { name: "Add an item" }).fill("Snacks");
+  await page.getByRole("textbox", { name: "Add an item" }).press("Enter");
+  await expect(page.locator(".ayy-checklist__item")).toHaveCount(2);
+  await page.getByRole("button", { name: "Reset" }).click();
+  await expect(page.locator(".ayy-checklist__item")).toHaveCount(1);
+  await expect(page.locator(".ayy-checklist__count")).toHaveText("0 of 1 done");
+});

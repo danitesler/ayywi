@@ -105,3 +105,5 @@ export function cssVar(name: TokenName): string {
 }
 
 export * from "./components/find-bar/find-bar";
+
+export * from "./components/checklist/checklist";

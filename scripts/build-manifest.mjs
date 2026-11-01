@@ -192,7 +192,7 @@ const sizeLines = (c) => [
   `Width — ${c.sizes.width}`,
 ];
 /** A component's section: classes, states, JS, element, React, a11y, do/don't and examples. Shared by llms-full.txt and llms/<slug>.md.
-    llms-full.txt leaves out the examples (most of the bytes: icons are inline SVG) and the states that don't apply, so AI tools can read it whole. */
+    llms-full.txt leaves out examples, inapplicable states and extra guidance, so AI tools can read it whole. */
 function componentMarkdown(c, h = "##", { full = true } = {}) {
   const part = [`${h} ${c.name}`, `Category: ${c.category}. ${c.description}${c.aka?.length ? ` Also called: ${c.aka.join(", ")}.` : ""}`];
   part.push(`**Classes**\n${list(Object.entries(c.classes).map(([k, v]) => `\`.${k}\` — ${v}`))}`);
@@ -223,7 +223,7 @@ function componentMarkdown(c, h = "##", { full = true } = {}) {
     )}`,
   );
   if (c.a11y?.length) part.push(`**Accessibility**\n${list(c.a11y)}`);
-  if (c.do?.length) part.push(`**Do**\n${list(c.do)}`);
+  if (c.do?.length) part.push(`**Do**\n${list(full ? c.do : c.do.slice(0, 1))}`);
   if (full && c.dont?.length) part.push(`**Don't**\n${list(c.dont)}`);
   if (!full) {
     if (c.examples.length) part.push(`**Examples**: ${c.examples.map((ex) => ex.title).join(", ")}. Copy-ready HTML and React in llms/${c.slug}.md.`);
@@ -281,7 +281,7 @@ ${PATTERNS.map((p) => `- [${p.name}](llms/pattern-${p.slug}.md): ${p.summary}`).
 
 ## Components
 
-Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); llms-full.txt has the same sections without the examples.
+Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); llms-full.txt has the API and a shorter selection of guidance, without examples.
 
 ${byCategory.map(([cat, list]) => `### ${cat}\n\n${list.map((c) => `- [${c.name}](llms/${c.slug}.md): ${c.description}`).join("\n")}`).join("\n\n")}
 

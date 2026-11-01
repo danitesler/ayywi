@@ -71,6 +71,7 @@ Name the component for every piece of a screen before writing it. Each "Not" is 
 | Write or edit a rich document: notes, a page, a description with headings, lists, to-dos, images and embeds | BlockEditor (<ayy-block-editor> in HTML): Notion-style blocks with / for block types, Markdown shortcuts, a formatting bar, @ mentions and drag handles; store its value (blocks) or convert with blockEditorToMarkdown / blockEditorToHtml. | a <textarea> with a Markdown preview, execCommand on one big contenteditable, or a third-party rich text library |
 | Mention people or reference issues inline in a comment (@user, #issue) | Mentions (<ayy-mentions> in HTML) wrapping a textarea and suggestion listbox. | contenteditable rich-text hacks or an unanchored dropdown under a textarea |
 | Give or display a star rating or review score | Rating (interactive radio stars with optional half and clearable, or readOnly for fractional scores). | buttons or spans of ★ characters with custom click handlers |
+| An editable list of things to tick off (packing list, release steps, subtasks) | Checklist: Enter adds the next item, Backspace on an empty one removes it, a count and progress on top. | Checkboxes next to hand-wired inputs |
 | Find text in a document, sheet or log and step through the matches | FindBar above the content (floating over an editor): the app finds the matches and passes current and total; Enter and Shift+Enter step, Esc closes. | a Search bar with hand-made arrows and a counter |
 | Search or filter by typing | Search bar to filter what's on screen, Combobox to pick a value, Command palette (⌘K) to jump anywhere. | an <input> with a hand-drawn magnifier |
 | Pick a date or time | DatePicker or DatePickerGrid for one date near today; DateRange or DateRangePicker for a start and end span; TimePicker or TimePickerTrigger for discrete hours and minutes; DateTimePicker or DateTimePickerTrigger for combined date and time; Input type="date" for a birth date, type="time" for rapid keyboard entry. | a hand-built month grid or time dropdown |
@@ -553,7 +554,7 @@ Shipped as `@danitesler/ayywi/brands/<name>.css`; make your own with `npx @danit
 
 - **Actions** (Things people click to do something.): Button, Hover actions, Toolbar, Action bar, Dropdown menu, Command palette
 - **Navigation** (Getting around a site and a page.): Navbar, App shell, Bottom nav, Top bar, Footer, Breadcrumb, Pagination, Steps, Table of contents, Tree
-- **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Find bar, Filter bar, Sorting, Textarea, Mentions, Block editor, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
+- **Forms** (Inputs, choices and their labels.): Field, Input, PIN input, Search bar, Find bar, Filter bar, Sorting, Textarea, Mentions, Block editor, Inline edit, Select, Combobox, Tag input, Record picker, Transfer list, Date & time picker, Color picker, Icon picker, Checkbox, Checklist, Radio, Segmented control, Chip, Color swatch, Choice card, Slider, Number field, Rating, File upload, Switch, Shortcut, Settings
 - **Layout** (Containers and ways to organise content.): Page header, Showcase, Card, Tabs, Accordion, Carousel, Separator, Scrollbar, Drag and drop
 - **Overlays** (Content that floats above the page.): Dialog, Popover, Tooltip
 - **Feedback** (Status, progress and messages.): Alert, Toast, Progress, Progress ring, Spinner, Skeleton, Empty state
@@ -630,14 +631,6 @@ Category: Actions. The control for starting an action, like saving, submitting o
 
 **Do**
 - Use a button for any action the user can take: submit, open, save, delete.
-- Use a SplitButton when a primary action has closely related alternatives in a DropdownMenu ("Deploy" + "Deploy to preview").
-- Apply buttonClass() to an <a> when a link should look like an action.
-- Always pair icon-only buttons (size="icon*", without a text label) with a Tooltip so sighted mouse and keyboard users can identify the action.
-- Keep one primary button per view or section; make everything else secondary, outline or ghost.
-- On a marketing or portfolio page, the one call to action can be ring instead of primary, with an outline button beside it.
-- Put the icon (<Icon> or an .ayy-icon <svg>) before the label; the button sizes it (16px on sm/md, 20px on lg).
-- Use one Fab for a phone screen's main, constructive action: create, compose, scan, add. Make it extended when the action isn't obvious from an icon, or on the first screens of an app.
-- Hide the Fab on screens where the main action is already on screen (a form's Save) or while a sheet is open.
 
 **Examples**: Variants, Sizes, With icon & icon-only, Split button, Loading with spinner, Wide button alignment, Link styled as a button, Ring call to action, Floating action button: icon, extended, secondary, small, large, Floating action button in an app shell, above the bottom nav. Copy-ready HTML and React in llms/button.md.
 
@@ -677,9 +670,6 @@ Category: Actions. Small buttons that appear over a picture, a video or a card w
 
 **Do**
 - Use hover actions for the few icon actions on a picture, a video frame or a media card: Copy, Annotate, Pin, Trim, and a ⋯ menu for the rest.
-- Group them on one bar (group) when there are three or more in one corner; keep them separate when each corner holds one or two.
-- Put a --reveal row directly inside the element whose hover should show it (the card, the picture's box).
-- End a group with a ⋯ DropdownMenu for anything that doesn't earn its own button.
 
 **Examples**: Separate, in the corners, Grouped on a glass bar. Copy-ready HTML and React in llms/hover-actions.md.
 
@@ -729,11 +719,6 @@ Category: Actions. A row or column of tools for one surface, like an editor, a c
 
 **Do**
 - Use a toolbar for the tools of one surface: an image or canvas editor, a text selection, a media viewer, a table's bulk actions.
-- Put the tools that switch modes in a group where one is pressed (the current tool), then separators, then one-off actions (Undo, Redo), then a ToolbarSpacer and the labelled actions (Copy, Save).
-- Use vertical for a side rail on wide screens and scroll on phones; floating over a canvas or next to a selection.
-- Use PopoverTrigger asChild around an icon-only ToolbarButton with aria-label to open a subtoolbar; its label also supplies the tooltip. Give the popup Toolbar its own aria-label and use side=end beside a vertical rail.
-- Put a Swatch group (size sm, track) in it for colours, and a DropdownMenu trigger (a ToolbarButton) for overflow.
-- Wrap toolbar items in a Tooltip with a keyboard hint element (<Shortcut keys="..." /> in React, .ayy-shortcut in HTML) to show their action and shortcut on hover and focus.
 
 **Examples**: Editor tools, undo and a labelled action, Floating formatting bar, Vertical rail. Copy-ready HTML and React in llms/toolbar.md.
 
@@ -786,11 +771,6 @@ Category: Actions. A bar that appears at the bottom of the screen once someone s
 
 **Do**
 - Use an Action bar with a selectable Table or Grid so bulk actions appear at the bottom as soon as one or more items are selected.
-- Show the selected count first, followed by the clear button, a separator, and the actions with destructive Delete last.
-- When an Action bar has many actions, keep text labels for unique or context-specific actions (e.g. "Assign reviewer", "Change status") and use icon-only buttons (`icon`, `aria-label`) for universally recognized bulk actions (Duplicate, Copy link, Archive, Delete).
-- Place an ActionBarSeparator between labelled buttons and icon buttons to visually divide distinct action groups.
-- Always pair icon-only action buttons with a Tooltip so users can identify the action on hover and keyboard focus.
-- Fold less common bulk actions into a DropdownMenu triggered from a trailing ActionBarButton.
 
 **Examples**: Multi-select bulk actions, Many actions with icon buttons. Copy-ready HTML and React in llms/action-bar.md.
 
@@ -870,11 +850,6 @@ Category: Actions. A list of actions that opens from a button. It supports subme
 
 **Do**
 - Use a menu for an item's secondary actions (rename, duplicate, delete) and for overflow “⋯” menus in toolbars and table rows.
-- Show an item's shortcut with shortcut="Mod+…" so Mac and Windows users each see their own keys as keycaps.
-- Nest one level at most, for variants of one action. Don't hide frequent actions in a submenu.
-- Use a split row (DropdownMenuRow with DropdownMenuMore) when one item has a second, related set of choices: the row runs the action, its ⋯ opens on click (not hover) with variants like "Duplicate as template".
-- Put destructive actions last, after a separator.
-- Keep item labels to a verb + noun: "Rename project".
 
 **Examples**: Item actions, Sizes. Copy-ready HTML and React in llms/menu.md.
 
@@ -928,11 +903,6 @@ Category: Actions. A search box above a list of actions and places, so people ca
 
 **Do**
 - Offer one in any app with more than a handful of screens or actions, on ⌘K / Ctrl+K, and show the shortcut on a Search button so people find it.
-- Group items by what they do (Create, Go to, Appearance) and keep labels verb-first ("New task", "Switch theme").
-- Add keywords for the words people might type instead ("preferences" for Settings).
-- Show each item's own shortcut at its end so the palette teaches them.
-- Use TextHighlight (<TextHighlight> in React, <mark class="ayy-text-highlight"> in HTML) to highlight matching terms in titles and descriptions.
-- Show descriptions conditionally when matches occur in item descriptions, or keep descriptions always visible for items that need extra context.
 
 **Examples**: Inline palette with groups and shortcuts, ⌘K dialog, Search with text highlight and descriptions. Copy-ready HTML and React in llms/command.md.
 
@@ -979,9 +949,6 @@ Category: Navigation. The header at the top of a website, with the brand on one 
 
 **Do**
 - Use a navbar as the top bar of a website: logo, two to five top-level links, one call to action.
-- Keep one call to action in the actions group (a ring button for marketing pages, size sm).
-- Add a NavbarToggle (last) once the links don't fit a phone: they fold into a panel under the bar, and the brand and call to action stay visible.
-- Put the theme switch (a DropdownMenu of themes that calls setTheme()) in the actions group.
 
 **Examples**: Site header, Menu on phones. Copy-ready HTML and React in llms/navbar.md.
 
@@ -1086,16 +1053,6 @@ Category: Navigation. The frame around a web app: a sidebar for navigation next 
 
 **Do**
 - Use it as the outer layout of a signed-in app or dashboard.
-- Keep the same destinations, icons and order on every screen.
-- Use size="sm" for long navigation such as a docs tree.
-- With more than five destinations, put the four most used in the bottom nav and end with a "More" tab that opens the drawer.
-- Group destinations under headings once there are more than about six.
-- Keep each link to one line: an icon and a short label. Put account and help in the footer.
-- Give a destination that people manage (a project, a page, a folder) an ayy-app-shell__row with an AppShellMore at its end: the link still opens it, and the ⋯ opens rename, duplicate and archive.
-- Give the brand a mark (an icon or your logo) and a name or a __logotype: the rail shows the mark, and resting the pointer on it reveals the expand button.
-- Start each page in the main with a Page header.
-- Add a __resize handle when people have long names to read, and save the width from onResize / ayy-resize.
-- Open settings in a Dialog with size="full", sections grouped, each starting with a Top bar.
 
 **Examples**: Playground — one shell, every variation, Parts — every piece of the shell in one frame. Copy-ready HTML and React in llms/app-shell.md.
 
@@ -1140,11 +1097,6 @@ Category: Navigation. The tab bar of a phone app. It keeps the main destinations
 
 **Do**
 - Use a bottom nav for top-level destinations of a phone app, so they're one thumb-tap away.
-- Use compact mode or sm/md sizes when accommodating five or more destinations.
-- Put it inside the App shell, after the main: it shows on phones and the sidebar takes over from 48rem, with no media query of yours.
-- Give it the same destinations, icons and order as the sidebar's top-level links.
-- Keep labels to one short word: Home, Search, Inbox, Account.
-- With many destinations, end with a "More" tab that opens the sidebar as a drawer (a BottomNavButton with the ayy-app-shell__toggle class).
 
 **Examples**: Phone tab bar. Copy-ready HTML and React in llms/bottom-nav.md.
 
@@ -1182,9 +1134,6 @@ Category: Navigation. The header of a phone screen, with a back button, the scre
 
 **Do**
 - Use it at the top of every phone screen below the tab bar's first level, with a back button to where the user came from.
-- Use large on a tab's first screen (Inbox, Notes), plain on the screens pushed from it.
-- Put the screen's own search in the __row so it scrolls away with the bar or stays, as you choose.
-- Start each section of a settings shell (App shell in settings mode, in a size="full" Dialog) with one: onBack (or backHref) to the section list, backLabel "Settings", the section's name as the title. Its back button shows on phones only, and on wide screens its title lines up with the section's column.
 
 **Examples**: Back, title with subtitle, actions, Large title with a search bar, Centred title. Copy-ready HTML and React in llms/top-bar.md.
 
@@ -1226,8 +1175,6 @@ Category: Navigation. The bottom of a website page: the brand with a short line 
 
 **Do**
 - Use the footer at the end of every page of a website, after <main>.
-- Group links into two to four columns with one-word headings (Product, Company, Resources, Legal).
-- Put the copyright and legal links in FooterBottom, and a theme menu there too if the navbar doesn't have one.
 
 **Examples**: Site footer. Copy-ready HTML and React in llms/footer.md.
 
@@ -1265,8 +1212,6 @@ Category: Navigation. A trail of links that shows where the current page sits in
 
 **Do**
 - Use a breadcrumb on pages that sit two or more levels deep: an index page, a case study, an article.
-- Use the page titles as they appear in their own headings.
-- Use pill over imagery or the ambient grid; plain elsewhere.
 
 **Examples**: Plain and pill, Sizes. Copy-ready HTML and React in llms/breadcrumb.md.
 
@@ -1309,9 +1254,6 @@ Category: Navigation. Controls for moving between the pages of a long table or l
 
 **Do**
 - Use pagination under a table or list that has more rows than fit, when people need to reach a specific page or share its URL.
-- Give pages URLs (href) when you can, so back and reload work.
-- Offer a page size picker (pageSize, onPageSizeChange) on long tables so people choose how much they scan.
-- Show the range next to it ("41–60 of 1,280") in muted text.
 
 **Examples**: Under a table, With a page size picker, Sizes. Copy-ready HTML and React in llms/pagination.md.
 
@@ -1347,8 +1289,6 @@ Category: Navigation. A progress indicator for a short flow like sign-up or chec
 
 **Do**
 - Use steps above a multi-page form or wizard with three to five steps, so people know how much is left.
-- Name steps by what happens in them (Account, Team, Billing), in one or two words.
-- Use the vertical version beside a long form on wide screens, or when the row wouldn't fit a phone.
 
 **Examples**: Checkout, row and column, Sizes. Copy-ready HTML and React in llms/steps.md.
 
@@ -1393,9 +1333,6 @@ Category: Navigation. A table of contents for long pages. It lists links to the 
 
 **Do**
 - Use a table of contents on long pages with named sections: case studies, docs, articles, settings pages.
-- List sections in page order; the scrollspy assumes it.
-- Set --ayy-spot on the page (or the nav) to tint the bar and number with the content's accent.
-- Make the page layout put it above the content on phones (a wrapping flex row does, as in the example); --sticky then turns it into a sticky pill with a dropdown menu.
 
 **Examples**: Numbered, beside the content. Copy-ready HTML and React in llms/toc.md.
 
@@ -1447,8 +1384,6 @@ Category: Navigation. A hierarchical list of folders, files or records: groups t
 
 **Do**
 - Use a tree to browse a nested structure: folders and files, a page hierarchy, categories or a project's contents.
-- Keep ids stable and pass them as expandedIds/selectedId when the rest of the screen shows the same folder (a picker in a card, a split view).
-- Pair the chevron with the label on the same row and let the label wrap; never truncate a folder name to make a narrow tree fit.
 
 **Examples**: Project files, Choose a folder, Sizes. Copy-ready HTML and React in llms/tree.md.
 
@@ -1484,8 +1419,6 @@ Category: Forms. A wrapper that ties a label, an input and its hint or error mes
 
 **Do**
 - Wrap every labelled form control in a Field: Input, Input group, Textarea, Select, Switch, Checkbox.
-- Keep hints to one short sentence.
-- Show errors after the user leaves the field or submits, not on every keystroke.
 
 **Examples**: Form fields. Copy-ready HTML and React in llms/field.md.
 
@@ -1528,8 +1461,6 @@ Category: Forms. A single-line text field for names, emails, passwords, search a
 
 **Do**
 - Use an input for short free-text entry: names, URLs, search, API keys, passwords.
-- Use an InputGroup when an input needs a leading icon, a prefix/suffix unit, or a trailing action button.
-- Match the input size to neighbouring buttons in a toolbar (sm with sm).
 
 **Examples**: Sizes, Input types, Input group & addons, Validation error. Copy-ready HTML and React in llms/input.md.
 
@@ -1575,8 +1506,6 @@ Category: Forms. One box per character for verification codes, two-factor authen
 
 **Do**
 - Use a PIN input for fixed-length verification codes, authenticator tokens, backup codes and numeric PINs.
-- Group 6- or 8-character codes as [3, 3] or [4, 4] so people can scan and compare them at a glance.
-- Accept pasted codes containing spaces or dashes — connectPinInput strips them automatically.
 
 **Examples**: Verification code & masked PIN. Copy-ready HTML and React in llms/pin-input.md.
 
@@ -1618,8 +1547,6 @@ Category: Forms. A rounded search field with a magnifier and a clear button, oft
 
 **Do**
 - Use it at the top of a phone list or a search screen; filter as people type (onValueChange) or on Enter (onSearch).
-- Say what it searches in the placeholder and the label ("Search notes").
-- Put it in a Top bar's second row on a list's first screen.
 
 **Examples**: Empty, with text and sizes, Large, with Cancel. Copy-ready HTML and React in llms/search-bar.md.
 
@@ -1655,7 +1582,6 @@ Category: Forms. Find and replace text in a document, sheet or log, with a match
 
 **Do**
 - Use a find bar to find and replace text in a document, sheet or log.
-- Pass the current match and count from the app, and translate labels.
 
 **Examples**: Find in a document. Copy-ready HTML and React in llms/find-bar.md.
 
@@ -1712,9 +1638,6 @@ Category: Forms. A bar that brings together everything needed to filter a list, 
 
 **Do**
 - Use a filter bar above tables, cards, lists, and feeds that support filtering by multiple criteria.
-- Use quick filter tabs for primary mutually exclusive statuses (All, Drafts, Published) with live counts.
-- Use faceted filter triggers for secondary multi-select dimensions (Assignee, Priority, Label).
-- Display applied filters as removable chips with a Clear all button so users see and modify current filters in one glance.
 
 **Examples**: Status tabs, Faceted filters, Consolidated filter. Copy-ready HTML and React in llms/filter-bar.md.
 
@@ -1751,8 +1674,6 @@ Category: Forms. A dropdown for choosing how a list, table or feed is ordered. I
 
 **Do**
 - Use Sorting when users need to order a table, grid, search feed, or list by multiple properties.
-- Pair SortingTrigger with DropdownMenu and DropdownMenuRadioGroup for accessible sort selection.
-- Display the currently active sort order in the trigger label so users always know how items are sorted.
 
 **Examples**: Unified dropdown sort menu. Copy-ready HTML and React in llms/sorting.md.
 
@@ -1788,7 +1709,6 @@ Category: Forms. A multi-line text field for longer text like comments and descr
 
 **Do**
 - Use a textarea for descriptions, notes, prompts and config snippets (mono).
-- Set rows for a sensible starting height.
 
 **Examples**: Basic, autosize, mono, Sizes. Copy-ready HTML and React in llms/textarea.md.
 
@@ -1832,7 +1752,6 @@ Category: Forms. A multi-line text field that opens a floating suggestions list 
 
 **Do**
 - Use Mentions for comments, review notes, chat composers and issue descriptions where people reference teammates (@) or records (#).
-- Pass keywords on options (such as role or full handle) so people find teammates either by name or username.
 
 **Examples**: Teammate @mentions & #issues. Copy-ready HTML and React in llms/mentions.md.
 
@@ -1933,11 +1852,6 @@ Category: Forms. A document editor made of blocks: headings, lists, tables, call
 
 **Do**
 - Use a Block editor for documents people write and come back to: notes on a task, a page in a wiki, a spec, a long description with headings, lists, to-dos and media.
-- Store the value (blocks) as it is, or convert it with blockEditorToMarkdown / blockEditorFromMarkdown when the storage is Markdown, and render it elsewhere with blockEditorToHtml.
-- Pass mentions for the people and records your app has (@ for people, # for issues), with a function when the list is long or remote.
-- Pass upload so pasted, dropped and picked files go to your storage instead of the default data: URLs.
-- Pass renderMath (for example KaTeX's renderToString) so equation blocks show as math, and keep that library in your app so ayywi's bundle stays small.
-- Keep tables for short, plain facts (a price list, a schedule). Cells are plain text, one line each, up to 100 rows and 12 columns; a spreadsheet pasted into a cell fills the cells from there. A new table is two columns, only as wide as they are; drag a column's edge to size it, and use the corner button to fit the table to the block's width.
 
 **Examples**: A page: headings, lists, to-dos, a callout, mentions, an image and code, Task notes in a Card, editable or read-only. Copy-ready HTML and React in llms/block-editor.md.
 
@@ -1978,8 +1892,6 @@ Category: Forms. A value that becomes an input where it sits: a page or card tit
 
 **Do**
 - Use inline edit for a short value people rename in place: a page title, a project or file name, a version, a due date.
-- Write the label as the action ("Rename the project"), and keep a formatted displayValue in React when the raw value isn't what people should read.
-- Keep the raw value in data-value (plain HTML) and format only the .ayy-inline-edit__text.
 
 **Examples**: Title, Description. Copy-ready HTML and React in llms/inline-edit.md.
 
@@ -2024,9 +1936,6 @@ Category: Forms. A dropdown for choosing one option from a list. It's the native
 
 **Do**
 - Use a select to choose one option from a longer list (country, time zone, role).
-- Put a sensible default first, or a disabled placeholder option.
-- Write a plain <select> with <option>s (or React Select): the list comes with it. In plain HTML load elements.global.js (or import "@danitesler/ayywi/elements").
-- Give options pictures when the choice is visual (a theme, a font, a colour): one .ayy-select__picture per option (React: pictures). Phones keep the OS picker with text only, so the option text must still say what it is.
 
 **Examples**: Sizes, states and pictures. Copy-ready HTML and React in llms/select.md.
 
@@ -2071,8 +1980,6 @@ Category: Forms. A text field that filters a list as you type, for picking one o
 
 **Do**
 - Use a combobox to pick one of many known values: more than ten or so, where people know what they're looking for (a city, a customer, a time zone).
-- Give options keywords for the other words people type (the country for a city, the email for a customer), and meta for what helps tell them apart.
-- For results from a server, set filter={false} (or manual on <ayy-combobox>) and replace the options on each keystroke.
 
 **Examples**: Time zone. Copy-ready HTML and React in llms/combobox.md.
 
@@ -2119,9 +2026,6 @@ Category: Forms. A field that turns what you type into removable chips, for tags
 
 **Do**
 - Use it for a short open list of free text: tags, labels, keywords, email recipients.
-- Offer the tags people already use as suggestions so they don't create near-duplicates.
-- Set max when there's a limit, and say it in the hint.
-- Check each tag (an email address) in onValueChange and show a FieldError for a bad one.
 
 **Examples**: Tags with suggestions, Recipients, large, at most 5. Copy-ready HTML and React in llms/tag-input.md.
 
@@ -2179,8 +2083,6 @@ Category: Forms. A tag field whose chips are records picked from a list: one per
 
 **Do**
 - Use it to attach records to something: an assignee, labels, projects, reviewers.
-- Give options a description when names repeat, and keywords for what people type (an email, a project key).
-- Turn on creatable only when a new record is allowed, and save it in onCreate so its id is the real one.
 
 **Examples**: Assignee, one person, Labels, several and creatable. Copy-ready HTML and React in llms/record-picker.md.
 
@@ -2229,7 +2131,6 @@ Category: Forms. A dual-list shuttle for moving items between an available colum
 
 **Do**
 - Use a Transfer list when users need to see both what is available and what is assigned side by side (role permissions, report columns).
-- Turn on searchable when either column can hold more than ~10 items.
 
 **Examples**: Role permissions with search. Copy-ready HTML and React in llms/transfer-list.md.
 
@@ -2359,9 +2260,6 @@ Category: Forms. Pickers for a date, a date range, a time, or a date with a time
 
 **Do**
 - Use DatePicker or DatePickerGrid for picking a single date near today.
-- Use DateRange or DateRangePicker for date spans (stays, bookings, analytics intervals).
-- Use TimePicker or TimePickerTrigger for picking discrete hours and minutes.
-- Use DateTimePicker or DateTimePickerTrigger when both date and time must be chosen together.
 
 **Examples**: Date picker, Date range picker, Time picker, Date & time picker, Month grid with presets. Copy-ready HTML and React in llms/date-time-picker.md.
 
@@ -2409,8 +2307,6 @@ Category: Forms. A panel for choosing any colour. It combines an area for shade 
 
 **Do**
 - Use ColorPicker when people need to pick any custom colour or fine-tune hues, saturation, and transparency (e.g. in graphic design tools, theme customizers, or canvas drawing apps).
-- Provide preset swatches for common or brand-approved choices so users don't have to start from scratch.
-- Enable alpha only when transparency is supported by the underlying target.
 
 **Examples**: Color picker with alpha and presets, Compact color picker without alpha. Copy-ready HTML and React in llms/color-picker.md.
 
@@ -2457,8 +2353,6 @@ Category: Forms. A searchable grid of icons and emoji with a remove button, for 
 
 **Do**
 - Use an icon picker to let people mark a column, project, page or label with an icon or emoji of their choice.
-- Offer a short, relevant icon set (the same Hugeicons the app uses) and keep the emoji section for personal flair.
-- Give every option a plain label and keywords, so search finds "money" under Dollar and 💰.
 
 **Examples**: Icons and emoji with search, From a button in a popover. Copy-ready HTML and React in llms/icon-picker.md.
 
@@ -2497,11 +2391,44 @@ Category: Forms. A box for turning an option on or off, or for picking several i
 
 **Do**
 - Use a checkbox for choices submitted with a form (terms, preferences saved with a Save button).
-- Use checkboxes to select several items in a list or table, with an indeterminate select-all.
-- Phrase labels positively: "Email me updates", not "Don't email me".
-- Match the size to the controls around it: sm beside sm buttons and inputs, lg in forms made for touch.
 
 **Examples**: States, Coloured by priority, Sizes. Copy-ready HTML and React in llms/checkbox.md.
+
+## Checklist
+
+Category: Forms. An editable list of items to tick off, with an optional completion count and progress. Also called: checklist, check-list, todo-list.
+
+**Classes**
+- `.ayy-checklist` — Root list and controls.
+- `.ayy-checklist__header` — Completion count and progress.
+- `.ayy-checklist__count` — Number of completed items.
+- `.ayy-checklist__progress` — Progress bar, filling the remaining header width.
+- `.ayy-checklist__items` — List of items.
+- `.ayy-checklist__item` — Checkbox, text field and remove button row.
+- `.ayy-checklist__text` — Editable item text.
+- `.ayy-checklist__new` — Field for appending an item.
+- `.ayy-checklist__remove` — Remove button, revealed on hover or focus.
+
+**States**
+- `hover` (`Hover an item`)
+- `focus` (`Focus a text field, checkbox or remove button`)
+- `selected` (`An item's checkbox is checked`)
+
+**Sizes**
+- Density — Checkboxes and buttons follow density and size scope.
+- Width — Fills its container; text fields shrink to fit.
+
+**React** — `import { Checklist } from "@danitesler/ayywi/react";`
+- `<Checklist>` renders div.ayy-checklist with progress, list and add field. Props: `items` ChecklistItem[] — controlled items; `onItemsChange` (items: ChecklistItem[]) => void; `label` string — list name; `showProgress` boolean — show count and progress, default true; `createId` () => string — create item IDs; `labels` Partial<ChecklistLabels> — translated labels
+
+**Accessibility**
+- The list and controls have accessible names; progress is named by the count.
+- Enter adds, Backspace removes an empty item, arrows move focus and Alt+Arrow moves an item. Enter during IME composition is ignored.
+
+**Do**
+- Use a checklist for an editable list of things to tick off, such as packing or release steps.
+
+**Examples**: Packing list. Copy-ready HTML and React in llms/checklist.md.
 
 ## Radio
 
@@ -2541,8 +2468,6 @@ Category: Forms. A set of options where exactly one can be chosen. It's built on
 
 **Do**
 - Use radios to pick exactly one of 2–6 visible options (plan, visibility, region).
-- Pre-select the most common option when there's a sensible default.
-- Set the size on the RadioGroup so every option, label and the legend change together.
 
 **Examples**: Group, Sizes. Copy-ready HTML and React in llms/radio.md.
 
@@ -2581,8 +2506,6 @@ Category: Forms. A short row of options where one is always selected, for switch
 
 **Do**
 - Use a segmented control for two to five mutually exclusive options that apply at once: a date range above a chart, list vs grid, monthly vs yearly.
-- Keep labels short and parallel (7 days · 30 days · 90 days).
-- Use size sm in a toolbar or card header, and full on a phone when it's the main control of the screen.
 
 **Examples**: Date range, billing cycle and sizes. Copy-ready HTML and React in llms/segmented-control.md.
 
@@ -2627,9 +2550,6 @@ Category: Forms. A compact pill for filters and choices. Chips can be switched o
 
 **Do**
 - Use chips to filter a list, a table or a grid by a few known values (status, priority, category), with counts when they help.
-- Use checkbox chips when filters combine, radio chips for one category at a time, ChipButton when the app filters on every click without a form.
-- Show the filters in force as removable chips above the results, with a Clear all button.
-- Use ChipGroup scroll in a phone toolbar so the chips stay on one line.
 
 **Examples**: Filters and one choice, Filter bar with active filters, Sizes. Copy-ready HTML and React in llms/chip.md.
 
@@ -2674,9 +2594,6 @@ Category: Forms. Round colour options for picking one colour, as for a tag, a li
 
 **Do**
 - Use swatches to pick a colour from a short, fixed set: a tag, a list, a calendar, an annotation pen.
-- Colour them with tokens (--ayy-chart-1…6 are made to be told apart and meet 3:1 on every surface), and name each one.
-- Offer a none swatch when "no colour" is a real choice, and a ColorSwatchCustom when people may need any colour (an image editor).
-- Use a track group in a toolbar, size sm.
 
 **Examples**: Tag colour, Pen colours on a track, with any colour. Copy-ready HTML and React in llms/swatch.md.
 
@@ -2724,9 +2641,6 @@ Category: Forms. A large option for picking one or more things that need more ex
 
 **Do**
 - Use choice cards when each option needs more than a word: a plan with its price, a delivery option with its date, an add-on with what it costs.
-- Use compact cards for a grid of short options: time slots, sizes, seat counts. Say what's left in the description. A day strip is compact cards in a scroll group.
-- Mark the recommended plan with a Badge in its title; the chosen state is the border.
-- Use type checkbox for add-ons that combine, radio for one choice.
 
 **Examples**: Plans, Time slots, Add-ons that combine, Sizes. Copy-ready HTML and React in llms/choice-card.md.
 
@@ -2766,8 +2680,6 @@ Category: Forms. A control for choosing a value, or a range between two values, 
 
 **Do**
 - Use a slider for a value where roughly is fine and the range is small: a class size, a volume, a radius, a budget.
-- Use a range slider to filter by price or size between a min and a max.
-- Pick a step that matches what people choose (5, 10, 0.5), and print the value next to the label.
 
 **Examples**: With its value, Price range, Sizes. Copy-ready HTML and React in llms/slider.md.
 
@@ -2806,8 +2718,6 @@ Category: Forms. A number input with minus and plus buttons, for small quantitie
 
 **Do**
 - Use a number field for small whole counts people adjust by one or two: items in a cart, guests, seats, nights.
-- Set min and max (min 1 for guests, 0 when zero removes the line) and say the limit in a hint.
-- Use size sm in a cart line or a table row.
 
 **Examples**: Guests, quantity and sizes. Copy-ready HTML and React in llms/number-field.md.
 
@@ -2850,8 +2760,6 @@ Category: Forms. Stars for picking a score in a review or feedback form, or disp
 
 **Do**
 - Use Rating for 1–5 satisfaction scores, product reviews and read-only score summaries.
-- Pair a read-only Rating with tabular numeric text ("4.5 (128)") when exact numbers matter.
-- Enable clearable when a rating is optional in a form.
 
 **Examples**: Interactive, half-star & read-only. Copy-ready HTML and React in llms/rating.md.
 
@@ -2886,9 +2794,6 @@ Category: Forms. An area for dropping files or clicking to choose them. It's a r
 
 **Do**
 - Use a file upload for attaching files to a record: photos, documents, a CSV to import. Say what's accepted in the hint.
-- Show each picked file below it in a List divided, with its size, a Progress bar while it uploads, and a remove button.
-- Use compact inside a form next to other fields, and the box when the upload is the main task of the screen.
-- Validate type and size when files arrive (onFiles), and show a FieldError with aria-invalid on the input when one is rejected.
 
 **Examples**: Photos with upload progress, Compact, in a form. Copy-ready HTML and React in llms/dropzone.md.
 
@@ -2924,7 +2829,6 @@ Category: Forms. An on/off control for a setting that takes effect right away. I
 
 **Do**
 - Use a switch for settings that take effect instantly (enable sync, dark mode).
-- Make the label describe the 'on' state: 'Sync on save', not 'Toggle sync'.
 
 **Examples**: States, Sizes. Copy-ready HTML and React in llms/switch.md.
 
@@ -2972,9 +2876,6 @@ Category: Forms. Keyboard shortcuts written once and shown correctly for each de
 
 **Do**
 - Store shortcuts as "Mod+…" strings and show them with Shortcut, so Mac and Windows users each see their own keys.
-- Put recorders in Settings rows: the action as the label, the recorder as the control.
-- Check a new shortcut against the others and set aria-invalid with a hint when it clashes.
-- Use ShortcutList for a keyboard help sheet (in a Dialog on "?").
 
 **Examples**: Recorders in settings, Keyboard shortcuts sheet. Copy-ready HTML and React in llms/shortcut.md.
 
@@ -3036,11 +2937,6 @@ Category: Forms. A layout for preferences as rows, with a label and a short hint
 
 **Do**
 - Use it for any settings or preferences screen: group related rows under short headings (General, Notifications, Shortcuts). They open in a near-full-screen Dialog (size="full") holding the App shell in settings mode (the Settings pattern): a sidebar of sections and one section's groups in the main.
-- Keep labels short and put the why in the hint ("Show a badge with the number of tasks due today").
-- Use a Switch for on/off that applies at once, a Select for one of several, a Shortcut recorder for key bindings.
-- On phones, use link rows with the current value for anything with more than a few choices, and open a sub-page.
-- Put Sign out or Delete account last, in its own group, as a destructive link row.
-- For appearance settings, use the same two controls in every product: Mode (System, Light, Dark) as a Select whose pictures are SettingsScreens, applied with setTheme(); and Theme as a Select of THEME_PRESETS whose pictures are a Swatch (ayy-swatch) with the theme's accent as --ayy-swatch, applied with setBrand(), setThemeCustomization() and setIconPack(). A theme carries the accent, surfaces, corners, fonts and icons, so don't offer them as separate settings: a cog button beside Theme opens a dialog with them (Accent colour swatches, Surface and Corners segmented controls, Font, Icons and Density selects) and a live preview, filled in with the current theme, and saving a change makes it the Theme select's last option, Custom. Text direction is a Select with SettingsScreen pictures (dir on the screen). Reduce motion as a Switch, Language as a Select, and Reset appearance as a destructive link row. Apply each at once.
 
 **Examples**: Preferences with switches and selects, Phone settings with link rows, Choice cards in a stacked row, Appearance, language and reset. Copy-ready HTML and React in llms/settings.md.
 
@@ -3071,9 +2967,6 @@ Category: Layout. The top of a screen in an app: the page title, a line of descr
 
 **Do**
 - Use a page header at the top of every screen in the App shell's main: title, one line of description, the page's actions.
-- Put the one thing people come to the page to do in the actions as the primary button (New project, Invite); filters and exports are outline or ghost.
-- Add a Breadcrumb above the title once pages are more than one level deep.
-- Keep the description to one sentence that says what the page is for.
 
 **Examples**: Title, description and actions. Copy-ready HTML and React in llms/page-header.md.
 
@@ -3112,7 +3005,6 @@ Category: Layout. A container for previewing a design at different screen sizes.
 
 **Do**
 - Use Showcase to demonstrate component variations and responsive layouts in docs and style guides.
-- Use the device switcher when previewing components with distinct phone or tablet layouts.
 
 **Examples**: Responsive preview with device switcher. Copy-ready HTML and React in llms/showcase.md.
 
@@ -3188,12 +3080,6 @@ Category: Layout. A surface that groups related content so it reads as one unit,
 
 **Do**
 - Use a card to group a unit of content: a project, a person, a plan, a stat.
-- Add interactive for clickable tiles in a grid.
-- Use accent tokens (--ayy-accent-*) as spotColor to tie a card to a category.
-- Keep one level of cards; use hairline dividers inside.
-- Mark the recommended plan in a pricing grid with featured (and a Badge that says why), not a coloured background.
-- Use the view type (view) for captures, recordings and pictures people open — a screenshot history, a media library — in .ayy-grid; pass the picture's real width and height, and keep the box at 16 / 10 so rows line up (portrait pictures letterbox over the blur).
-- On a view card, group three or more actions in one Hover actions bar (top end, group, reveal) ending in a ⋯ DropdownMenu; show a recording's length in CardViewBadge and add CardViewPlay.
 
 **Examples**: Basic, Interactive with spotlight, Linked card with media, View cards: capture history, Sizes. Copy-ready HTML and React in llms/card.md.
 
@@ -3241,8 +3127,6 @@ Category: Layout. Tabs for switching between panels of related content on the sa
 
 **Do**
 - Use tabs to switch views of the same object (Overview / Activity / Members) or as segmented filters with 2–6 options.
-- Keep tab labels to one or two words.
-- Keep the tab set stable — don't add/remove tabs based on content.
 
 **Examples**: Basic, With icons, Filters with counts, Sizes. Copy-ready HTML and React in llms/tabs.md.
 
@@ -3281,8 +3165,6 @@ Category: Layout. A stack of sections that expand and collapse, for FAQs and for
 
 **Do**
 - Use an accordion for FAQs and for long optional detail people pick from: pricing questions, shipping info, advanced settings.
-- Use single on FAQ lists so the page doesn't grow into a wall of text.
-- Open the first item when most people need it.
 
 **Examples**: FAQ, Sizes. Copy-ready HTML and React in llms/accordion.md.
 
@@ -3320,8 +3202,6 @@ Category: Layout. A row of slides that scrolls sideways, with buttons to move to
 
 **Do**
 - Use a carousel for a row of photos, screenshots or cards that doesn't need to be seen all at once: a gallery, feature highlights, personas.
-- Let the last slide peek in, so it's clear there's more.
-- Give images inside slides width and height so the strip doesn't jump.
 
 **Examples**: Cards. Copy-ready HTML and React in llms/carousel.md.
 
@@ -3347,8 +3227,6 @@ Category: Layout. A thin line that divides blocks of content, between sections o
 
 **Do**
 - Use a fading separator between the sections of a long page.
-- Use a plain or vertical separator between groups in a footer, toolbar or card.
-- Give the separator room with the layout's gap or the sections' padding.
 
 **Examples**: Plain, fading and vertical. Copy-ready HTML and React in llms/separator.md.
 
@@ -3379,8 +3257,6 @@ Category: Layout. A thin scrollbar with no track that is drawn in the text colou
 
 **Do**
 - Use the scrollbar on scroll containers inside a page: lists, panels, code, menus.
-- Put it on <html> to thin the page's own scrollbar.
-- Use the hover variant where the bar would crowd a dense, quiet surface.
 
 **Examples**: Always visible and on hover. Copy-ready HTML and React in llms/scrollbar.md.
 
@@ -3433,9 +3309,6 @@ Category: Layout. Standard drag and drop for reordering items and moving them be
 
 **Do**
 - Use drag and drop for user-driven reordering of lists, board columns, or table columns.
-- Always provide a DragHandle or keyboard alternative with visible focus ring.
-- Show clear drop indicators (ready, over, reject, and drop-edge line) so the user always knows what will happen on release.
-- Keep DragHandle tooltips general ('Drag to reorder'), naming the item in aria-label.
 
 **Examples**: Reorderable list, Board with drop targets. Copy-ready HTML and React in llms/drag-drop.md.
 
@@ -3498,13 +3371,6 @@ Category: Overlays. A window that opens over the page and asks for attention, fo
 
 **Do**
 - Use confirmDialog(), choiceDialog() or promptDialog() for a quick question from code (delete, discard changes, rename); compose a Dialog yourself when it needs more than one field.
-- Use a dialog for short, focused tasks that must finish before continuing (rename, create).
-- Use a dialog to confirm a destructive action, with the destructive variant on the confirm button.
-- Use a side modal to edit or inspect a record without leaving the page, and for a few project options, filters or a mobile nav drawer.
-- Use size="full" for an app's settings: it holds the App shell in settings mode (sections in its sidebar, one section in its main) over the page the user was on.
-- Put the primary action last in the footer.
-- Use a bottom sheet on phones for a short list of actions or options on the thing just tapped (share, sort, quick settings): it sits under the thumb.
-- In a side modal, put the form fields in the body and submit from the footer with <button type="submit" form="form-id">.
 
 **Examples**: Confirm, With a form, Side modal, Bottom sheet. Copy-ready HTML and React in llms/dialog.md.
 
@@ -3545,7 +3411,6 @@ Category: Overlays. A small floating panel attached to a button, for extra conte
 
 **Do**
 - Use a popover for small forms or details next to their trigger (share link, filters, quick edit).
-- Keep content short; if it scrolls, it probably wants to be a Dialog or a page.
 
 **Examples**: Share link, Sizes. Copy-ready HTML and React in llms/popover.md.
 
@@ -3580,11 +3445,6 @@ Category: Overlays. A short hint that appears when someone hovers or focuses an 
 
 **Do**
 - Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.
-- Keep action tooltips general ("Edit", "Delete", "More actions", "Copy"), never specific to an item ("Edit Lumen Labs") — leave the specific item in aria-label for screen readers.
-- Show a shortcut with <Shortcut keys="Mod+…" /> (or .ayy-shortcut in HTML) so Mac and Windows users each see their own keys as keycaps.
-- Keep it under ~60 characters.
-- Use side="start"/"end", not left/right, so RTL works.
-- Inside overflow:hidden containers, use the React component or <ayy-tooltip> — the CSS-only version can be clipped there.
 
 **Examples**: Sides. Copy-ready HTML and React in llms/tooltip.md.
 
@@ -3626,7 +3486,6 @@ Category: Feedback. A message placed in the flow of a page to tell someone somet
 
 **Do**
 - Use an alert for page- or section-level messages that stay until they're resolved: a billing issue, read-only mode, maintenance.
-- Lead with what happened, then say what to do about it.
 
 **Examples**: Variants, Sizes. Copy-ready HTML and React in llms/alert.md.
 
@@ -3709,11 +3568,6 @@ Category: Feedback. A short message that appears briefly to confirm something ha
 
 **Do**
 - Use NotificationToast (or toast()) to confirm something happened (Saved, Deployed) or report an async receipt needing no decision.
-- Say what happened in 2–5 words: "Project deleted".
-- Offer one Undo-style action instead of a confirmation dialog for reversible actions.
-- Use CardToast (toast.card()) for content previews that are visual — screenshots, screen recordings, video frames, GIFs, and image downloads.
-- Use the split CardToast variation when the user needs both an image preview thumbnail and file metadata (filename, dimensions, size) with direct actions.
-- Use InlineToast for localized contextual feedback (e.g. "Copied to clipboard", loading spinner) embedded directly within a card, toolbar, or form without triggering the toaster region.
 
 **Examples**: Trigger toast, Toast types, Inline toast. Copy-ready HTML and React in llms/toast.md.
 
@@ -3752,9 +3606,6 @@ Category: Feedback. A bar that shows how far along something is, or that work is
 
 **Do**
 - Use a progress bar when you know how far along something is: an upload, an import, a quota, a goal.
-- Use indeterminate for work of unknown length that takes more than ~1s.
-- Show the percentage or step as text nearby for anything longer than a few seconds.
-- For quotas or meters that aren't progress, the look still works — set role="meter" instead of progressbar.
 
 **Examples**: Values, tones, indeterminate, Task progress with status, Usage quotas and limits, Interactive simulation. Copy-ready HTML and React in llms/progress.md.
 
@@ -3800,8 +3651,6 @@ Category: Feedback. Progress shown as a ring that fills up, for goals, timers an
 
 **Do**
 - Use a ring where a circle means something or a bar has no room: a timer, a daily goal, a habit's week, a file's upload in a list row.
-- Put the number or time in the middle at md and up; next to the ring at sm.
-- Use success when a goal is reached, with a tick in the middle.
 
 **Examples**: A timer, a goal, inline. Copy-ready HTML and React in llms/progress-ring.md.
 
@@ -3835,8 +3684,6 @@ Category: Feedback. A small loading indicator for short waits, like inside a but
 
 **Do**
 - Use a spinner for waits under a few seconds on a small area: a button that's saving, a panel refreshing, a lazy menu.
-- Put it inside the button that started the work (<Button loading>), not somewhere else on the page.
-- Pair a large spinner with a line of text when the wait may be longer ("Importing 2,400 contacts…").
 
 **Examples**: Sizes and a loading button. Copy-ready HTML and React in llms/spinner.md.
 
@@ -3865,7 +3712,6 @@ Category: Feedback. A placeholder shaped like the content that's loading, so the
 
 **Do**
 - Use a skeleton for content that takes more than ~300ms and has a predictable layout (cards, lists, profile headers).
-- Match the real layout closely so nothing jumps when content arrives.
 
 **Examples**: Loading card. Copy-ready HTML and React in llms/skeleton.md.
 
@@ -3903,9 +3749,6 @@ Category: Feedback. What a list, table or page shows when it has nothing to disp
 
 **Do**
 - Use an empty state wherever a list, table or page can have nothing in it: first run, a finished inbox, a search with no results.
-- Say what will be here and give the one action that fills it (Create project, Import contacts, Clear filters).
-- Use the compact version inside a Card or a Table's body; the full one when it's the whole page.
-- Match the icon to the thing that's missing, in an IconTile.
 
 **Examples**: First run, No results, compact, Sizes. Copy-ready HTML and React in llms/empty-state.md.
 
@@ -3946,8 +3789,6 @@ Category: Data display. A small label that marks the status, category or count o
 
 **Do**
 - Use a badge for the status of an item (Synced, Error, Beta), a category or tag next to a title, or a live indicator (dot).
-- Keep labels to one or two words.
-- Use the status variants for status, accent spotlights for categories.
 
 **Examples**: Variants, Status dot, Sizes. Copy-ready HTML and React in llms/badge.md.
 
@@ -3982,8 +3823,6 @@ Category: Data display. A small coloured dot that shows the state of something, 
 
 **Do**
 - Use a status dot to indicate online presence, server or service health, or active streaming status.
-- Place the status dot beside a descriptive label or table cell value.
-- Use the pulse modifier for active or real-time statuses like live streams or ongoing recordings.
 
 **Examples**: Variants, Live pulsing. Copy-ready HTML and React in llms/status-dot.md.
 
@@ -4014,9 +3853,6 @@ Category: Data display. A small keycap for showing a keyboard key or shortcut in
 
 **Do**
 - Use a kbd for keys people press: "Press / to search", shortcuts in a menu or tooltip, a hint in a search field (InputGroupAddon).
-- Use one kbd for a whole shortcut (⌘K), or one per key with a plus between them (Ctrl + Shift + P).
-- Adapt modifiers to the user's OS: ⌘ / ⌥ / ⇧ / ⌃ on macOS, Ctrl / Alt / Shift / Win on Windows, and Ctrl / Alt / Shift / Super on Linux (or use <Shortcut keys="Mod+K" /> / <Kbd keyName="mod" />).
-- Listen to event.code (physical key like 'KeyE') or use matchShortcut(event, 'Mod+E') rather than event.key === 'e' so hotkeys work across keyboard layouts and languages (e.g. Russian Cyrillic Cmd+У).
 
 **Examples**: Shortcuts in text, Platform adaptation (macOS, Windows, Linux), Multi-language hotkey handling, Sizes. Copy-ready HTML and React in llms/kbd.md.
 
@@ -4046,8 +3882,6 @@ Category: Data display. A way to mark text inside a sentence, for search matches
 
 **Do**
 - Use TextHighlight to show matched search terms in command palettes, comboboxes, and search results.
-- Use the default subtle gray highlight with underline for search results so text remains calm and readable.
-- Use color variants (warning/yellow, destructive/red, success/green, info, orange) for specific semantic callouts.
 
 **Examples**: Search match and callout, Semantic color variants (yellow, red, green, blue, orange). Copy-ready HTML and React in llms/text-highlight.md.
 
@@ -4091,7 +3925,6 @@ Category: Data display. A small picture that stands for a person or a workspace.
 
 **Do**
 - Use avatars for people and workspaces in lists, headers and comments.
-- Use AvatarGroup for a stack of collaborators: show at most 4–5 and a "+3" badge for the rest.
 
 **Examples**: Sizes, Fallback, Group. Copy-ready HTML and React in llms/avatar.md.
 
@@ -4127,11 +3960,6 @@ Category: Data display. A single icon from the Hugeicons library that ayywi uses
 
 **Do**
 - Use an icon next to its text to help people recognise an action or item: buttons, menu items, list rows.
-- Use an icon with an accessible label for compact status where a word would be too long.
-- Import icons one by one from @hugeicons/core-free-icons; named imports tree-shake.
-- Let the component size icons inside buttons, menu items and alerts; use size for icons on their own.
-- Colour an icon through its text colour: .ayy-muted, or color: var(--ayy-color-success) on the <svg>.
-- Mark icons that point along the reading direction (arrows, chevrons, send, undo) directional so they mirror in RTL. Leave the rest alone: a clock or a check mark reads the same both ways.
 
 **Examples**: Sizes, Decorative and meaningful, Directional icons in RTL. Copy-ready HTML and React in llms/icon.md.
 
@@ -4160,8 +3988,6 @@ Category: Data display. A rounded app-icon tile that gives a product, plugin or 
 
 **Do**
 - Use an icon tile for the icon of a product, plugin, platform or service in a card or list row.
-- Draw glyphs in currentColor so they take the accent; brand marks with their own colours can keep them.
-- Use one accent per product and reuse it wherever that product appears.
 
 **Examples**: Accents and sizes. Copy-ready HTML and React in llms/icon-tile.md.
 
@@ -4191,8 +4017,6 @@ Category: Data display. A big number with a short label, for headline figures li
 
 **Do**
 - Use a stat to show a result or reach at a glance: "200k downloads", "+34% conversion".
-- Line several up with .ayy-grid or .ayy-cluster for the key numbers in a case study or dashboard header.
-- Format the number before it gets here (4.2k, 87%).
 
 **Examples**: Row of stats. Copy-ready HTML and React in llms/stat.md.
 
@@ -4238,11 +4062,6 @@ Category: Data display. Rows of people, records or settings, each with an image 
 
 **Do**
 - Use a list for a feed of similar things people scan and open: conversations, notifications, files, members, search results.
-- Use List divided for settings: a title and description per row, the Switch or Button at the end.
-- Use List compact for a short checklist with an icon per row: plan perks, what's included, password rules.
-- Keep the same slots on every row: if one row has an avatar, they all do.
-- Put the time or count in ListMeta, and a status in a Badge at the end.
-- Cut long descriptions to one line with .ayy-truncate in inboxes and pickers.
 
 **Examples**: Conversations, Settings rows. Copy-ready HTML and React in llms/list.md.
 
@@ -4285,9 +4104,6 @@ Category: Data display. A record's attributes as a definition list: a muted term
 
 **Do**
 - Use a property list for a record's attributes: a project, a server, an order, a person.
-- Keep terms short and values plain; nest a control only for a value edited in place.
-- Use PropertyRow empty and emptyText when there is no value, so the row stays and reads as empty.
-- Use compact inside a card header or a dense summary.
 
 **Examples**: Record, Compact, Sizes. Copy-ready HTML and React in llms/property-list.md.
 
@@ -4332,8 +4148,6 @@ Category: Data display. A list row that slides sideways to reveal actions, the w
 
 **Do**
 - Use it on phone lists for the two or three things people do to rows most: Done, Snooze, Delete.
-- Put the positive action at the start and the destructive one last at the end, as mail apps do.
-- Set --ayy-swipe-bg to the surface the list sits on (a card) so the row hides its trays.
 
 **Examples**: Task rows: Done, Pin, Snooze, Delete. Copy-ready HTML and React in llms/swipe.md.
 
@@ -4378,10 +4192,6 @@ Category: Data display. A list of events in time order, like a history, a change
 
 **Do**
 - Use a timeline to show a chronological log or sequence of events: deploy history, shipment tracking, audit trails, activity feeds.
-- Use TimelineMarker pulse on the latest or currently active event in a running process.
-- Use Timeline alternate for milestones, company history, or changelogs on wide marketing or overview pages.
-- Include TimelineTime with a semantic timestamp so users can anchor events in time.
-- Keep markers consistent within a timeline: all dots, or all icons, or all avatars.
 
 **Examples**: Deployment history, Alternating product milestones. Copy-ready HTML and React in llms/timeline.md.
 
@@ -4408,8 +4218,6 @@ Category: Data display. A browser window drawn around a screenshot, a video or a
 
 **Do**
 - Use a frame to show product screens in a case study, landing page or portfolio card, so they read as product and not decoration.
-- Give images width and height so the frame keeps its size while loading.
-- Blur real names and customer data in production screenshots, and say so in the caption.
 
 **Examples**: Screenshot in a window. Copy-ready HTML and React in llms/frame.md.
 
@@ -4445,9 +4253,6 @@ Category: Data display. The layout of a conversation, with other people's messag
 
 **Do**
 - Use chat for AI assistants and agents, and for support or feedback widgets.
-- On a marketing page, use it for a scripted "say hi" section that hands off to email or LinkedIn.
-- Keep bubbles short; split long answers into several messages.
-- Pair incoming messages with the sender's avatar the first time.
 
 **Examples**: Conversation with quick replies. Copy-ready HTML and React in llms/chat.md.
 
@@ -4513,9 +4318,6 @@ Category: Data display. A container for showing code, with a header, a file name
 
 **Do**
 - Use CodeBlock to display snippets, examples, configs, and commands with syntax highlighting.
-- Include a CodeBlockFilename in the header when showing multiple files or language context.
-- Include CodeBlockCopy so readers can easily copy snippet contents to clipboard.
-- Use numbered on multi-line snippets when referencing specific lines in accompanying text.
 
 **Examples**: Code block with filename and copy, Numbered lines, Language selector, Sizes. Copy-ready HTML and React in llms/code-block.md.
 
@@ -4633,14 +4435,6 @@ Category: Data display. Data table with quiet hairlines, muted sentence-case hea
 
 **Do**
 - Use a table to compare items across the same attributes.
-- End-align numbers with numeric; a cell keeps to one line, so put the full text in its title and add wrap to a column that must show it all.
-- Make scanned columns sortable; put the raw value in data-sort-value when the cell shows a formatted one.
-- Frame a working table with TableContainer: title, search and a columns menu above, Pagination below.
-- Compose a column menu with TableHead menu and icon, or make the title itself the trigger (a .ayy-table__sort button with aria-haspopup="menu" as the TableHead child, set aria-sort on the th): clicking the title opens the menu, which holds a Sort submenu, Duplicate, Hide and Delete, and dragging it still reorders. data-column-action wires sort-ascending/sort-descending (a Sort submenu), duplicate, hide, delete, freeze, wrap, icon, insert-before/after, add and shared filter/group controls. Return false from onColumnAction or cancel ayy-column-action to own the data changes.
-- Pin the name column on wide tables; use sticky with a max-block-size on long ones.
-- Use expandable rows for details that don't deserve a column, and group rows to split a list by status or date.
-- Put quick actions and a ⋯ DropdownMenu in a trailing actions cell; pair selection with an ActionBar for bulk actions.
-- Show TableEmpty with an EmptyState when a search matches nothing.
 
 **Examples**: Simple, Medium, Playground. Copy-ready HTML and React in llms/table.md.
 
@@ -4700,8 +4494,6 @@ Category: Data display. A grid of cards that can be selected, for media, project
 
 **Do**
 - Use Grid when items are browsed visually or as cards — media assets, screenshots, social media posts, projects and user records — and need multi-select and per-item actions like a Table.
-- Put GridItemSelect and GridItemActions inside GridItemMedia for visual cards (screenshots, media, social posts), or inside GridItemHeader for record cards (projects, users).
-- Provide a ⋯ DropdownMenu on each card for targeted secondary actions (Edit, Duplicate, Copy, Archive, Delete) and an ActionBar at the bottom for bulk actions on selected cards.
 
 **Examples**: Media assets, screenshots and social posts, Project cards and user records. Copy-ready HTML and React in llms/grid.md.
 
@@ -4812,9 +4604,5 @@ Category: Data display. Charts for reading data at a glance: bars, lines, areas,
 
 **Do**
 - Use a chart to show a trend or a comparison at a glance: signups per day, revenue against last month, traffic by source. Put it in a Card with the title and the key number (a Stat) above it.
-- Pick the form from the question: columns to compare amounts across periods (horizontal bars when the labels are long), stacked or 100% columns for parts over time, a line for a trend over many points (stacked areas for a total and its parts, steps for values that jump), a combo for amounts with their average or target, a histogram for how values spread, a waterfall for how one total became another, a scatter for how two measures relate (bubbles for a third), a donut or pie for a few parts of one whole, a gauge for one value against its limit, a radar to compare a few profiles over five to eight measures, a heatmap for activity by two dimensions (day × hour), a funnel for the steps people drop out of, a bar list for a ranking, a sparkline beside a number.
-- Colour series with the chart tokens in order (React does it). With a chart library, pass var(--ayy-chart-1)… (SVG) or chartColors() (canvas), and chartTheme() for its text, grid and tooltip.
-- Mark the previous period as a compare series instead of a second bright colour.
-- Keep the scale honest: bars start at 0; let chartScale() round the top.
 
 **Examples**: Colours, legend and hover card, Columns with two series, Line against last period, Stacked columns, 100% stacked columns, Horizontal bars, Columns with a line, Histogram, Waterfall, Stacked areas, Step line, Scatter, Bubbles, Donut, Pie, Gauges, Radar, Heatmap, Funnel, Bar list: top pages, Sparklines in stats, Table chart. Copy-ready HTML and React in llms/chart.md.

@@ -656,3 +656,6 @@ export type { BlockEditorBlock, BlockEditorBlockType, BlockEditorMention, BlockE
 export { confirmDialog, choiceDialog, promptDialog, type ConfirmDialogOptions, type ChoiceDialogOptions, type DialogChoice, type PromptDialogOptions } from "../components/dialog/dialog-prompt";
 
 export { FindBar, type FindBarProps } from "../components/find-bar/find-bar.react";
+
+export { Checklist, type ChecklistProps } from "../components/checklist/checklist.react";
+export type { ChecklistItem, ChecklistLabels } from "../components/checklist/checklist";

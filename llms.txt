@@ -23,7 +23,7 @@ Screens every app builds the same way, from several components:
 
 ## Components
 
-Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); llms-full.txt has the same sections without the examples.
+Each links to its own page (classes, React props, accessibility, do and don't, copy-ready HTML and React); llms-full.txt has the API and a shorter selection of guidance, without examples.
 
 ### Actions
 
@@ -69,6 +69,7 @@ Each links to its own page (classes, React props, accessibility, do and don't, c
 - [Color picker](llms/color-picker.md): A panel for choosing any colour. It combines an area for shade and brightness, sliders for hue and transparency, a hex field and a row of preset colours.
 - [Icon picker](llms/icon-picker.md): A searchable grid of icons and emoji with a remove button, for marking a column, project, page or label with a symbol. It sits in a Popover or as the submenu panel of a Menu.
 - [Checkbox](llms/checkbox.md): A box for turning an option on or off, or for picking several items from a list. It's the native checkbox with a clearer look, and it can show a mixed state when only some of a group is selected.
+- [Checklist](llms/checklist.md): An editable list of items to tick off, with an optional completion count and progress.
 - [Radio](llms/radio.md): A set of options where exactly one can be chosen. It's built on native radio buttons, grouped under a legend.
 - [Segmented control](llms/segmented-control.md): A short row of options where one is always selected, for switching a view, a range or a setting that changes what you see. It looks like tabs but works like radio buttons.
 - [Chip](llms/chip.md): A compact pill for filters and choices. Chips can be switched on and off, work as single or multiple choice, or be removable when they stand for filters that are applied.
