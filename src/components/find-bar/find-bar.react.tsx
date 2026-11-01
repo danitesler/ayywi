@@ -40,7 +40,7 @@ export const FindBar = /* @__PURE__ */ forwardRef<HTMLDivElement, FindBarProps>(
   return <div ref={ref} className={findBarClass({ floating, className })} role="search" aria-label={replace ? "Find and replace" : names.find} onKeyDown={onKeys} {...props}>
     <div className="ayy-find-bar__row">
       <input className="ayy-input ayy-find-bar__input" data-ayy-find="query" type="text" aria-label={names.find} placeholder={names.find} autoComplete="off" spellCheck={false} autoFocus={autoFocus} value={query} aria-invalid={query && !total ? "true" : undefined} onChange={(event) => onQueryChange(event.target.value)} />
-      <span className="ayy-find-bar__count" aria-live="polite">{findBarCountText(query, current, total, names)}</span>
+      <span className="ayy-find-bar__count" dir="auto" aria-live="polite">{findBarCountText(query, current, total, names)}</span>
       {onMatchCaseChange && <button type="button" className="ayy-button ayy-button--ghost ayy-button--icon" data-ayy-find="match-case" aria-pressed={matchCase} aria-label={names.matchCase} onClick={() => onMatchCaseChange(!matchCase)}>Aa</button>}
       <button type="button" className="ayy-button ayy-button--ghost ayy-button--icon" data-ayy-find="previous" aria-label={names.previous} aria-keyshortcuts="Shift+Enter" disabled={!total} onClick={onPrevious}><Icon icon={ArrowUp01Icon} name="chevron-up" /></button>
       <button type="button" className="ayy-button ayy-button--ghost ayy-button--icon" data-ayy-find="next" aria-label={names.next} aria-keyshortcuts="Enter" disabled={!total} onClick={onNext}><Icon icon={ArrowDown01Icon} name="chevron-down" /></button>

@@ -62,7 +62,7 @@ export const Checklist = /* @__PURE__ */ forwardRef<HTMLDivElement, ChecklistPro
   };
   return <div ref={mergeRefs(ref, root)} className={cx("ayy-checklist", className)} {...props}>
     {showProgress && <div className="ayy-checklist__header" hidden={!items.length}>
-      <span className="ayy-checklist__count" id={countId}>{names.count(progress.done, progress.total)}</span>
+      <span className="ayy-checklist__count" dir="auto" id={countId}>{names.count(progress.done, progress.total)}</span>
       <div className="ayy-progress ayy-progress--sm ayy-checklist__progress" role="progressbar" aria-labelledby={countId} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percent} style={{ "--ayy-value": progress.percent } as CSSProperties}><div className="ayy-progress__bar" /></div>
     </div>}
     <ul className="ayy-checklist__items" aria-label={label}>

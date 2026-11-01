@@ -151,11 +151,11 @@ test("appearance settings: Mode and Theme, selects with pictures, and picking up
   await expect(modeList).toBeHidden();
   await expect(app.locator("[data-theme='light']").first()).toBeVisible();
 
-  // Theme: one brand screen per ready-made theme and Custom; Ember brings its brand and icon pack.
+  // Theme: one colour swatch per ready-made theme and Custom; Ember brings its brand and icon pack.
   const theme = app.getByLabel("Theme", { exact: true });
   await theme.click();
   const themeList = page.getByRole("listbox", { name: "Theme" });
-  await expect(themeList.locator(".ayy-settings__screen--brand")).toHaveCount(7); // six themes and Custom
+  await expect(themeList.locator(".ayy-swatch")).toHaveCount(7); // six themes and Custom
   await themeList.getByRole("option", { name: "Ember", exact: true }).click();
   await expect(app.locator("[data-brand='ember']")).toBeVisible();
   await expect(app.locator("[data-brand='ember']")).toHaveAttribute("data-ayy-icons", "lucide");

@@ -24,6 +24,7 @@ test("fits a phone and mirrors in RTL", async ({ page }) => {
   const stageEl = example(page, "document");
   const bar = stageEl.locator(".ayy-find-bar");
   expect(await bar.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+  expect((await bar.getByRole("textbox", { name: "Replace with" }).boundingBox())!.width).toBeGreaterThan(150);
   await rtl(stageEl);
   const close = await bar.getByRole("button", { name: "Close" }).boundingBox();
   const query = await bar.getByRole("textbox", { name: "Find" }).boundingBox();

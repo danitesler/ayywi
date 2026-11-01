@@ -35,6 +35,9 @@ test("fits a phone, keeps long titles in their day, mirrors in RTL", async ({ pa
   const ex = example(page, "schedule");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expect(await day(ex, "2026-10-02").evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+  const more = day(ex, "2026-10-21").locator(".ayy-event-calendar__more");
+  await expect(more).toBeVisible();
+  expect(await more.evaluate((el) => el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= el.clientHeight + 1)).toBe(true);
   await rtl(ex);
   const mon = await day(ex, "2026-09-28").boundingBox(); const sun = await day(ex, "2026-10-04").boundingBox();
   expect(mon!.x).toBeGreaterThan(sun!.x);

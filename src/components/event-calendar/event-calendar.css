@@ -31,7 +31,11 @@
   .ayy-event-calendar__event[aria-current="true"] { outline: 2px solid Highlight; }
 }
 .ayy-event-calendar__body { display: flex; flex: 1; min-block-size: 0; min-inline-size: 0; }
-.ayy-event-calendar__more { justify-content: flex-start; max-inline-size: 100%; }
+.ayy-event-calendar__more { justify-content: flex-start; max-inline-size: 100%; min-inline-size: 0; padding-inline: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.1; }
 .ayy-event-calendar__popover-list { display: flex; flex-direction: column; gap: var(--ayy-space-1); margin: 0; padding: 0; list-style: none; }
 .ayy-event-calendar__events.ayy-drop-target { padding: 0; border: 0; border-radius: 0; background: transparent; }
 .ayy-event-calendar__events > .ayy-sortable__item { display: block; padding: 0; border: 0; border-radius: 0; background: transparent; }
+@media (max-width: 30rem) {
+  .ayy-event-calendar__day { padding-inline: 0; }
+  .ayy-event-calendar__more { font-size: var(--ayy-text-xs); font-weight: var(--ayy-weight-regular); overflow-wrap: normal; }
+}

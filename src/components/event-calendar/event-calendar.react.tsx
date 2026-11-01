@@ -8,7 +8,7 @@ import { eventCalendarClass, eventCalendarLabels, eventCalendarMonth, eventCalen
 
 function DayOverflow({ label, more, children }: { label: string; more: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger variant="ghost" className="ayy-event-calendar__more">{more}</PopoverTrigger><PopoverContent align="start" aria-label={label}><p className="ayy-eyebrow">{label}</p><ul className="ayy-event-calendar__popover-list">{open && children}</ul></PopoverContent></Popover>;
+  return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger variant="ghost" className="ayy-event-calendar__more" dir="auto">{more}</PopoverTrigger><PopoverContent align="start" aria-label={label}><p className="ayy-eyebrow">{label}</p><ul className="ayy-event-calendar__popover-list">{open && children}</ul></PopoverContent></Popover>;
 }
 
 export interface EventCalendarProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {

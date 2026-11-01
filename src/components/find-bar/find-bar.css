@@ -25,3 +25,6 @@
 @media (forced-colors: active) {
   .ayy-find-bar [data-ayy-find="match-case"][aria-pressed="true"] { outline: 2px solid Highlight; }
 }
+@media (max-width: 30rem) {
+  .ayy-find-bar__input { flex: 0 1 calc(100% - var(--ayy-space-4)); }
+}
