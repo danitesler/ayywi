@@ -61,7 +61,7 @@ test("app shell: sidebar and main scroll on their own, the sidebar follows the i
     const shell = stage(page).locator(".ayy-app-shell").first();
     const sidebar = shell.locator(".ayy-app-shell__sidebar");
     const main = shell.locator(".ayy-app-shell__main");
-    const footer = shell.locator(".ayy-app-shell__footer");
+    const footer = sidebar.locator(".ayy-app-shell__footer");
     const box = async (l: typeof shell) => (await l.boundingBox())!;
 
     // Tall content scrolls inside main; the shell keeps its height and the sidebar stays put.

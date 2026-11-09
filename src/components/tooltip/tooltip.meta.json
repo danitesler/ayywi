@@ -56,7 +56,7 @@
   ],
   "do": [
     "Use a tooltip to name icon-only buttons visually (they still need aria-label) and for short clarifications: shortcuts, truncated values.",
-    "Keep action tooltips general (\"Edit\", \"Delete\", \"More actions\", \"Copy\"), never specific to an item (\"Edit Lumen Labs\") — leave the specific item in aria-label for screen readers.",
+    "Keep action tooltips general (\"Edit\", \"Delete\", \"Duplicate\", \"More actions\"), never append an item name or title (\"Duplicate Write release notes\"). HoverAction uses its label as the tooltip, so pass the general action as label; provide extra accessible context separately when needed.",
     "Show a shortcut with <Shortcut keys=\"Mod+…\" /> (or .ayy-shortcut in HTML) so Mac and Windows users each see their own keys as keycaps.",
     "Keep it under ~60 characters.",
     "Use side=\"start\"/\"end\", not left/right, so RTL works.",

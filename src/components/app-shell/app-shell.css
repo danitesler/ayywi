@@ -199,7 +199,7 @@
   gap: var(--ayy-space-1);
 }
 
-.ayy-app-shell__group + .ayy-app-shell__group {
+:is(.ayy-app-shell__link, .ayy-app-shell__group) + .ayy-app-shell__group {
   margin-block-start: var(--ayy-space-5);
 }
 
@@ -729,7 +729,7 @@ ayy-app-shell {
     padding-inline-end: 0;
   }
 
-  .ayy-app-shell--collapsed > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)) .ayy-app-shell__toggle:not(:focus-visible) {
+  .ayy-app-shell--collapsed:not(:where(.ayy-app-shell--contained:has(> .ayy-app-shell__rail > .ayy-app-shell__brand))) > .ayy-app-shell__sidebar:is(:not(.ayy-app-shell--hover-preview > *), :not(:hover, :has(:focus-visible, :popover-open:not(.ayy-tooltip__content))), [data-ayy-hold]) .ayy-app-shell__head:has(> .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype)) .ayy-app-shell__toggle:not(:focus-visible) {
     opacity: 0;
   }
 
@@ -799,7 +799,7 @@ ayy-app-shell {
   gap: 0;
 }
 
-.ayy-app-shell--sm > .ayy-app-shell__sidebar .ayy-app-shell__group + .ayy-app-shell__group {
+.ayy-app-shell--sm > .ayy-app-shell__sidebar :is(.ayy-app-shell__link, .ayy-app-shell__group) + .ayy-app-shell__group {
   margin-block-start: var(--ayy-space-4);
 }
 
@@ -1187,11 +1187,207 @@ ayy-app-shell {
   }
 }
 
+/* ---- Layout types: how the shell's parts sit on the page, on wide screens. Docked (no modifier) is the sidebar on the
+   edge. Below 48rem every type is the same phone layout, so what the rail holds also needs a place in the bottom nav or
+   the drawer. ---- */
+
+/* Only the contained layout shows the rail. */
+.ayy-app-shell__rail {
+  display: none;
+}
+
+@media (min-width: 48.001rem) {
+  /* Contained: a thin rail of top-level destinations on the page background, and the sidebar, the main area and the detail
+     pane as full-height rounded panels beside it. */
+  .ayy-app-shell--contained {
+    --_gutter: var(--ayy-space-2);
+    --_rail: calc(var(--_row) + var(--ayy-space-2) * 2);
+    --_sidebar-w-collapsed: calc(var(--_row) + var(--ayy-space-3) * 2 + 2px);
+    column-gap: var(--_gutter);
+    padding-block: var(--_gutter);
+    padding-inline: var(--_rail) var(--_gutter);
+    background-color: var(--ayy-color-surface);
+  }
+
+  .ayy-app-shell--contained > :is(.ayy-app-shell__sidebar, .ayy-app-shell__main, .ayy-app-shell__detail) {
+    border: 1px solid var(--ayy-color-line);
+    border-radius: var(--ayy-radius-card);
+  }
+
+  .ayy-app-shell--contained > :is(.ayy-app-shell__sidebar, .ayy-app-shell__detail) {
+    background-color: var(--ayy-color-surface-raised);
+  }
+
+  .ayy-app-shell--contained > .ayy-app-shell__main {
+    background-color: var(--ayy-color-bg);
+  }
+
+  .ayy-app-shell--contained > .ayy-app-shell__rail {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ayy-space-1);
+    inline-size: var(--_rail);
+    padding-block: var(--_gutter);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .ayy-app-shell__rail > .ayy-app-shell__brand {
+    flex: none;
+    justify-content: center;
+    inline-size: var(--_row);
+    block-size: var(--_row);
+    margin-block-end: var(--ayy-space-1);
+    padding: 0;
+  }
+
+  .ayy-app-shell__rail > .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar) {
+    flex: none;
+    inline-size: var(--_icon);
+    block-size: var(--_icon);
+  }
+
+  .ayy-app-shell__rail .ayy-app-shell__link {
+    flex: none;
+    justify-content: center;
+    inline-size: var(--_row);
+    padding: 0;
+  }
+
+  /* The rail marks the area you're in with aria-current="true"; the sidebar's link marks the page. */
+  .ayy-app-shell__rail .ayy-app-shell__link[aria-current="true"] {
+    background-color: var(--ayy-color-wash-hover);
+  }
+
+  .ayy-app-shell__rail > .ayy-app-shell__footer {
+    flex: none;
+    align-items: center;
+  }
+
+  /* What the rail holds isn't repeated in the sidebar beside it. Phones have no rail, so the drawer keeps both. */
+  .ayy-app-shell--contained:has(> .ayy-app-shell__rail > .ayy-app-shell__brand) > .ayy-app-shell__sidebar > .ayy-app-shell__head > .ayy-app-shell__brand > :is(svg, .ayy-icon, img, .ayy-avatar):not(.ayy-app-shell__logotype),
+  .ayy-app-shell--contained:has(> .ayy-app-shell__rail > .ayy-app-shell__footer) > .ayy-app-shell__sidebar > .ayy-app-shell__footer {
+    display: none;
+  }
+
+  .ayy-app-shell--contained > .ayy-app-shell__resize {
+    inset-block: var(--_gutter);
+    inset-inline-start: calc(var(--_rail) + var(--_col) + var(--_gutter) / 2 - 0.25rem);
+  }
+
+  .ayy-app-shell--contained > .ayy-app-shell__resize--detail {
+    inset-inline-start: auto;
+    inset-inline-end: calc(var(--_gutter) * 1.5 + var(--_detail-w) - 0.25rem);
+  }
+
+  /* Floating: the main area is the shared background, edge to edge, and everything else floats on it with its own outline:
+     the bar, the sidebar and the detail pane. */
+  .ayy-app-shell--floating {
+    --_gutter: var(--ayy-space-3);
+    --_bar: calc(var(--_row) + var(--ayy-space-2) * 2 + 2px);
+    --_sidebar-w-collapsed: calc(var(--_row) + var(--ayy-space-3) * 2 + 2px);
+    isolation: isolate;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding: var(--_gutter);
+  }
+
+  .ayy-app-shell--floating > :is(.ayy-app-shell__sidebar, .ayy-app-shell__detail) {
+    grid-row: 2;
+    border: 1px solid var(--ayy-color-line);
+    border-radius: var(--ayy-radius-card);
+  }
+
+  .ayy-app-shell--floating > .ayy-app-shell__main {
+    z-index: -1;
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    margin: calc(-1 * var(--_gutter));
+    padding-inline-start: calc(var(--_col) + var(--_gutter) + var(--ayy-space-6));
+    transition: padding-inline var(--ayy-duration-base) var(--ayy-ease-menu);
+  }
+
+  .ayy-app-shell--floating:has(> .ayy-app-shell__detail:not([hidden])) > .ayy-app-shell__main {
+    padding-inline-end: calc(var(--_detail-w) + var(--_gutter) + var(--ayy-space-6));
+  }
+
+  .ayy-app-shell--floating:has(> .ayy-app-shell__bar) > .ayy-app-shell__main {
+    padding-block-start: calc(var(--_bar) + var(--_gutter) * 2);
+  }
+
+  /* An absolute child placed in the grid is measured against its area, so the handles run the height of the panels. */
+  .ayy-app-shell--floating > .ayy-app-shell__resize {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .ayy-app-shell--floating.ayy-app-shell--resizing > .ayy-app-shell__main {
+    transition: none;
+  }
+
+  /* Header: the bar runs across the top and the sidebar and main sit under it. Floating shows the same bar. The brand moves
+     to the bar, and the bar's __toggle collapses the sidebar, its icon on the same axis as the link icons below it. */
+  .ayy-app-shell--header {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  :is(.ayy-app-shell--header, .ayy-app-shell--floating) > .ayy-app-shell__bar {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-items: center;
+    gap: var(--ayy-space-2);
+    min-inline-size: 0;
+    padding-block: var(--ayy-space-2);
+    padding-inline: var(--ayy-space-3);
+    border-block-end: 1px solid var(--ayy-color-hairline);
+    background-color: var(--ayy-color-surface);
+  }
+
+  .ayy-app-shell--floating > .ayy-app-shell__bar {
+    box-sizing: border-box;
+    block-size: var(--_bar);
+    margin-block-end: var(--_gutter);
+    padding-block: 0;
+    border: 1px solid var(--ayy-color-line);
+    border-radius: var(--ayy-radius-card);
+  }
+
+  :is(.ayy-app-shell--header, .ayy-app-shell--floating) > .ayy-app-shell__bar > .ayy-app-shell__brand {
+    min-inline-size: 0;
+    margin-inline-end: auto;
+    padding-inline: var(--ayy-space-2);
+  }
+
+  :is(.ayy-app-shell--header, .ayy-app-shell--floating) > .ayy-app-shell__bar .ayy-app-shell__toggle {
+    inline-size: var(--_row);
+    block-size: var(--_row);
+  }
+
+  .ayy-app-shell--header > :is(.ayy-app-shell__sidebar, .ayy-app-shell__main, .ayy-app-shell__detail, .ayy-app-shell__resize) {
+    grid-row: 2;
+  }
+
+  /* An absolute child placed in the grid is measured against its area, so the handles start under the bar. */
+  .ayy-app-shell--header > .ayy-app-shell__resize {
+    grid-column: 1 / -1;
+  }
+
+  :is(.ayy-app-shell--header, .ayy-app-shell--floating) > .ayy-app-shell__sidebar > .ayy-app-shell__head {
+    display: none;
+  }
+}
+
 /* Forced colors: fills are erased, so the current link takes the system highlight and the hairline becomes a real border. */
 @media (forced-colors: active) {
   .ayy-app-shell__sidebar,
   .ayy-app-shell__bar,
-  .ayy-app-shell__detail {
+  .ayy-app-shell__detail,
+  .ayy-app-shell--contained > .ayy-app-shell__main {
     border-color: CanvasText;
   }
   .ayy-app-shell__resize::after {
@@ -1206,7 +1402,7 @@ ayy-app-shell {
   .ayy-app-shell__group + .ayy-app-shell__group {
     border-color: CanvasText;
   }
-  .ayy-app-shell__link[aria-current="page"] {
+  .ayy-app-shell__link:is([aria-current="page"], [aria-current="true"]) {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;

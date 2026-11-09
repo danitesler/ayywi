@@ -3,6 +3,9 @@ import { addDays, datePickerMonth, type Weekday } from "../date-time-picker/date
 export interface EventCalendarEvent { id: string; date: string; title: string; time?: string; color?: string; done?: boolean }
 export interface EventCalendarDay { date: string; day: number; outside: boolean; today: boolean; events: EventCalendarEvent[] }
 export interface EventCalendarLabels {
+  view: string; days: string; month: string; year: string; week: string; day: string; multiDay: string; dayCount: (count: number) => string;
+  previousPeriod: string;
+  nextPeriod: string;
   previous: string;
   next: string;
   today: string;
@@ -11,7 +14,8 @@ export interface EventCalendarLabels {
   more: (count: number) => string;
 }
 export const eventCalendarLabels: EventCalendarLabels = {
-  previous: "Previous month", next: "Next month", today: "Today", add: (day) => `Add an event on ${day}`,
+  view: "Calendar view", days: "Number of days", month: "Month", year: "Year", week: "Week", day: "Day", multiDay: "Custom", dayCount: (count) => `${count} days`,
+  previousPeriod: "Previous period", nextPeriod: "Next period", previous: "Previous month", next: "Next month", today: "Today", add: (day) => `Add an event on ${day}`,
   events: (count) => count ? `${count} ${count === 1 ? "event" : "events"}` : "", more: (count) => `+${count} more`,
 };
 export function eventCalendarClass({ className }: { className?: string } = {}): string { return cx("ayy-event-calendar", className); }

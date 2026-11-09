@@ -329,15 +329,18 @@ export function connectDragDrop(root: HTMLElement, options: DragDropOptions = {}
     preview.setAttribute("inert", "");
     const direction = getComputedStyle(item).direction;
     if (direction === "rtl") preview.setAttribute("dir", "rtl");
-    parent.append(preview);
     const chip = preview.classList.contains(`${dragPreviewClass}--chip`);
+    const initialX = chip ? Math.min(offX, 16) : offX;
+    const initialY = chip ? Math.min(offY, 16) : offY;
+    preview.style.transform = `translate(${event.clientX - initialX}px, ${event.clientY - initialY}px) scale(1.02)`;
+    parent.append(preview);
     drag = {
       item,
       from,
       fromIndex: itemsOf(from).indexOf(item),
       preview,
-      offX: chip ? Math.min(offX, 16) : offX,
-      offY: chip ? Math.min(offY, 16) : offY,
+      offX: initialX,
+      offY: initialY,
       x: event.clientX,
       y: event.clientY,
       scroller: nearestScroller(item),

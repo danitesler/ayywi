@@ -1213,19 +1213,8 @@
   text-wrap: balance;
 }
 
-.pv-page__header--center .pv-page__meta {
-  justify-content: center;
-}
-
 .pv-links--center {
   justify-content: center;
-}
-
-.pv-page__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ayy-space-1) var(--ayy-space-3);
-  font-size: var(--ayy-text-s);
 }
 
 @media (max-width: 48rem) {

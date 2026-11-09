@@ -65,6 +65,7 @@
   ],
   "do": [
     "Use hover actions for the few icon actions on a picture, a video frame or a media card: Copy, Annotate, Pin, Trim, and a ⋯ menu for the rest.",
+    "Keep each HoverAction label to the general action, such as Duplicate or Delete; the label is also the tooltip, so never append the item name.",
     "Group them on one bar (group) when there are three or more in one corner; keep them separate when each corner holds one or two.",
     "Put a --reveal row directly inside the element whose hover should show it (the card, the picture's box).",
     "End a group with a ⋯ DropdownMenu for anything that doesn't earn its own button."

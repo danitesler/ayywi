@@ -21,12 +21,14 @@ import {
   appShellGroupLabelClass,
   appShellHeadClass,
   appShellHoverPreviewClass,
+  appShellLayoutClass,
   appShellLinkClass,
   appShellLinkSubClass,
   appShellListClass,
   appShellMainClass,
   appShellMoreClass,
   appShellNavClass,
+  appShellRailClass,
   appShellResizeClass,
   appShellResizeDetailClass,
   appShellSettingsClass,
@@ -37,11 +39,13 @@ import {
   appShellTitleClass,
   appShellToggleClass,
   connectAppShell,
+  syncAppShellBarToggles,
   type AppShellEdge,
+  type AppShellLayout,
   type AppShellSize,
 } from "./app-shell";
 
-export type { AppShellEdge, AppShellSize };
+export type { AppShellEdge, AppShellLayout, AppShellSize };
 
 interface AppShellContextValue {
   collapsed?: boolean;
@@ -56,6 +60,12 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
    * `md` (`ayy-app-shell--md`, 32px compact rows with 16px icons), or `sm` (`ayy-app-shell--sm`, 28px compact rows for long trees such as docs).
    */
   size?: AppShellSize;
+  /**
+   * How the parts sit on the page on wide screens: `docked` (default, the sidebar on the edge), `contained` (an AppShellRail
+   * outside, the panels beside it), `floating` (the AppShellBar and each panel outlined on a shared background) or
+   * `header` (the AppShellBar across the top). Phones are the same for all four.
+   */
+  layout?: AppShellLayout;
   /**
    * Settings mode, for a shell inside <DialogContent size="full">: the sidebar holds an AppShellTitle and the settings
    * sections, and the main shows one section. On phones the sections list and the open section are separate screens.
@@ -87,7 +97,7 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
 
 /** The viewport-high frame: a sidebar and the main content, each scrolling on its own. With an AppShellBar, the sidebar is a drawer on phones. Wide screens support collapsing to an icon rail and hover preview. */
 export const AppShell = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellProps>(function AppShell(
-  { size, settings, collapsed, hoverPreview = true, drawer, onCollapseChange, onResize, className, children, ...props },
+  { size, layout, settings, collapsed, hoverPreview = true, drawer, onCollapseChange, onResize, className, children, ...props },
   ref,
 ) {
   const own = useRef<HTMLDivElement>(null);
@@ -112,7 +122,8 @@ export const AppShell = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellProps
     for (const toggle of toggles) {
       toggle.setAttribute("aria-expanded", String(!isCollapsed));
     }
-  }, [isCollapsed]);
+    syncAppShellBarToggles(own.current);
+  }, [isCollapsed, layout]);
 
   return (
     <AppShellContext.Provider value={{ collapsed: isCollapsed }}>
@@ -122,6 +133,7 @@ export const AppShell = /* @__PURE__ */ forwardRef<HTMLDivElement, AppShellProps
           appShellClass,
           size === "sm" && appShellSmClass,
           size === "md" && appShellMdClass,
+          appShellLayoutClass(layout),
           settings && appShellSettingsClass,
           drawer && appShellDrawerClass,
           isCollapsed && appShellCollapsedClass,
@@ -327,6 +339,19 @@ export interface AppShellItemProps extends LiHTMLAttributes<HTMLLIElement> {}
 
 export const AppShellItem = /* @__PURE__ */ forwardRef<HTMLLIElement, AppShellItemProps>(function AppShellItem(props, ref) {
   return <li ref={ref} {...props} />;
+});
+
+export interface AppShellRailProps extends HTMLAttributes<HTMLElement> {}
+
+/**
+ * The contained layout's thin column of top-level destinations, outside the panels: an AppShellBrand with only a mark,
+ * AppShellLinks with an icon and an aria-label, and an AppShellFooter. Hidden in the other layouts and on phones.
+ */
+export const AppShellRail = /* @__PURE__ */ forwardRef<HTMLElement, AppShellRailProps>(function AppShellRail(
+  { className, "aria-label": label = "Apps", ...props },
+  ref,
+) {
+  return <nav ref={ref} className={cx(appShellRailClass, className)} aria-label={label} {...props} />;
 });
 
 export interface AppShellMoreProps extends ButtonHTMLAttributes<HTMLButtonElement> {}

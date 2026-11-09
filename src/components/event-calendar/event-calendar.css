@@ -1,11 +1,13 @@
-.ayy-event-calendar { display: flex; flex-direction: column; gap: var(--ayy-space-2); block-size: 100%; min-block-size: 0; min-inline-size: 0; }
+.ayy-event-calendar { display: flex; flex-direction: column; gap: var(--ayy-space-2); inline-size: 100%; block-size: 100%; min-block-size: 0; min-inline-size: 0; }
 .ayy-event-calendar__header { display: flex; justify-content: space-between; align-items: center; gap: var(--ayy-space-2); }
-.ayy-event-calendar__title { margin: 0; font-size: var(--ayy-text-sm); font-weight: var(--ayy-weight-semibold); }
-.ayy-event-calendar__nav { display: flex; gap: var(--ayy-space-1); }
-.ayy-event-calendar__weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); font-size: var(--ayy-text-xs); color: var(--ayy-color-muted); }
+.ayy-event-calendar__title { margin: 0; font-family: var(--ayy-font-heading); font-size-adjust: none; font-size: var(--ayy-text-sm); font-weight: var(--ayy-weight-semibold); }
+.ayy-event-calendar__title .ayy-date-picker-grid { font-family: var(--ayy-font-body); font-size-adjust: var(--ayy-font-body-adjust, none); font-weight: var(--ayy-weight-regular); }
+.ayy-event-calendar__nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--ayy-space-1); }
+.ayy-event-calendar__navigation { display: flex; gap: var(--ayy-space-1); }
+.ayy-event-calendar__weekdays { display: grid; grid-template-columns: repeat(var(--_ayy-calendar-columns, 7), minmax(0, 1fr)); font-size: var(--ayy-text-xs); color: var(--ayy-color-muted); }
 .ayy-event-calendar__weekdays > span { padding-inline: var(--ayy-space-1-5); overflow: hidden; }
-.ayy-event-calendar__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-rows: minmax(6.5rem, 1fr); flex: 1; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--ayy-color-line); border-inline-start: 1px solid var(--ayy-color-line); }
-.ayy-event-calendar__day { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; overflow: hidden; padding: var(--ayy-space-1); border-block-end: 1px solid var(--ayy-color-line); border-inline-end: 1px solid var(--ayy-color-line); }
+.ayy-event-calendar__grid { display: grid; grid-template-columns: repeat(var(--_ayy-calendar-columns, 7), minmax(0, 1fr)); grid-auto-rows: minmax(6.5rem, 1fr); flex: 1; margin: 0; padding: 0; list-style: none; border-block-start: 1px solid var(--ayy-color-line); border-inline-start: 1px solid var(--ayy-color-line); }
+.ayy-event-calendar__day { contain: size; display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; overflow: hidden; padding: var(--ayy-space-1); border-block-end: 1px solid var(--ayy-color-line); border-inline-end: 1px solid var(--ayy-color-line); }
 .ayy-event-calendar__day[data-outside] { background-color: color-mix(in srgb, var(--ayy-color-text) 2.5%, transparent); }
 .ayy-event-calendar__day[data-outside] .ayy-event-calendar__date { color: var(--ayy-color-muted); }
 .ayy-event-calendar__day-head { position: relative; display: flex; align-items: center; min-inline-size: 0; }

@@ -8,18 +8,20 @@
     "ayy-board": "Horizontally scrollable board.",
     "ayy-board__column": "One status or stage.",
     "ayy-board__header": "Column title, count and actions.",
+    "ayy-board__column-handle": "Drag handle for reordering columns.",
     "ayy-board__title": "Column heading.",
     "ayy-board__count": "Number of cards.",
     "ayy-board__actions": "Column actions at the inline end.",
     "ayy-board__cards": "Scrollable sortable card list.",
     "ayy-board__card": "Interactive sortable card.",
+    "ayy-board__card-content": "Card contents beside optional hover actions.",
     "ayy-board__empty": "Empty column message.",
     "ayy-board__add": "Add card button."
   },
   "variants": {},
   "states": {
     "default": { "looks": "Columns with headings, counts and cards." },
-    "hover": { "when": "Hover a card", "looks": "Card's interactive hover treatment." },
+    "hover": { "when": "Hover a card", "looks": "Card lifts and optional actions appear." },
     "pressed": { "when": "Press a card", "looks": "Card and Drag and drop provide the interaction feedback." },
     "focus": { "when": "Focus a card or button", "looks": "The control has its focus ring." },
     "disabled": { "none": "Disable an action or use aria-disabled on a draggable item." },
@@ -29,13 +31,13 @@
     "dragging": { "when": "A card is dragged", "looks": "Drag and drop marks the card, targets and drop edge." }
   },
   "sizes": { "density": "Controls follow density and size scope.", "width": "Columns use --ayy-board-column-width (17rem by default); the board scrolls inline." },
-  "js": "boardClass({ className? }); boardColumnClass, boardHeaderClass, boardTitleClass, boardCountClass, boardActionsClass, boardCardsClass, boardCardClass, boardEmptyClass, boardAddClass.",
+  "js": "boardClass({ className? }); boardColumnClass, boardColumnHandleClass, boardHeaderClass, boardTitleClass, boardCountClass, boardActionsClass, boardCardsClass, boardCardClass, boardCardContentClass, boardEmptyClass, boardAddClass.",
   "react": { "import": "import { Board, BoardColumn, BoardCard } from \"@danitesler/ayywi/react\";", "components": {
-    "Board": { "renders": "div.ayy-board, optionally a DragDropArea", "props": { "onMove": "(move: DragMove) => void — update card state", "accepts": "(item, area) => boolean — optional drop rule" } },
-    "BoardColumn": { "renders": "section with heading and DropTarget", "props": { "id": "string — column ID", "title": "ReactNode — heading", "count": "number — card count", "icon": "ReactNode — optional icon", "actions": "ReactNode — column actions", "emptyText": "ReactNode — empty message", "accepts": "string — accepted card types", "onAdd": "() => void — show add button", "addLabel": "string — add button label", "footer": "ReactNode — replaces add button" } },
-    "BoardCard": { "renders": "li.ayy-card.ayy-sortable__item", "props": { "id": "string — card ID", "selected": "boolean — featured card", "type": "string — type checked by drop targets" } }
+    "Board": { "renders": "div.ayy-board, optionally a DragDropArea", "props": { "onMove": "(move: DragMove) => void — update card state", "onColumnMove": "(move: DragMove) => void — reorder columns, each with a drag handle. React only", "accepts": "(item, area) => boolean — optional drop rule" } },
+    "BoardColumn": { "renders": "section with heading and DropTarget", "props": { "id": "string — column ID", "title": "ReactNode — heading", "count": "number — card count", "icon": "ReactNode — optional icon", "actions": "ReactNode — column actions", "emptyText": "ReactNode — empty message", "accepts": "string — accepted card types", "onAdd": "() => void — show add button", "addLabel": "string — add button label", "moveLabel": "string — accessible column drag handle name", "footer": "ReactNode — replaces add button" } },
+    "BoardCard": { "renders": "li.ayy-card.ayy-sortable__item", "props": { "id": "string — card ID", "selected": "boolean — featured card", "type": "string — type checked by drop targets", "actions": "ReactNode — HoverAction buttons revealed on hover or focus" } }
   } },
-  "a11y": ["Label the board and each column; cards are focusable.", "Alt+arrow keys move cards along and across columns; Drag and drop announces moves."],
+  "a11y": ["Label the board and each column; cards are focusable.", "Alt+arrow keys move cards along and across columns; column handles take the arrow keys. Drag and drop announces moves."],
   "do": ["Use a board for cards grouped into columns by status or stage.", "Update the controlled card lists in onMove and provide stable IDs."],
   "dont": ["Don't use a board for a simple list — use List or Table."],
   "examples": [{ "id": "release", "title": "Release board" }]

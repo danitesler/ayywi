@@ -12,6 +12,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Added
 
+- **[App shell](#/app-shell)**
+  New layout types set how the frame sits on wide screens: docked (as before), contained (a rail of destinations outside rounded panels), floating (the top bar and each panel outlined on a shared background) and header (a bar across the top).
+
 - **[Event calendar](#/event-calendar)**
   A month of events on their days, with today, other months' days, an add button per day, selection, "+N more" when a day is full, and drag or Alt+arrow keys to move an event.
 
@@ -163,6 +166,12 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 
 ### Changed
 
+- **[Event calendar](#/event-calendar)**
+  Switch between month, week, day and custom 2–7 day views using a nested menu, pick the month and year from the heading with clear picker titles and familiar date-picker text, and keep the calendar full-width and stable when navigating.
+
+- **[Board](#/board)**
+  Reorder columns using drag handles and see cards without an outline around each group. Drag previews keep the card shape, with a cleaner, evenly padded drop target; cards can reveal actions on hover or focus, with concise action labels.
+
 - **Docs**
   The all-components guide repeated every recommendation → it keeps the first, with complete guidance on each component page.
 
@@ -181,6 +190,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **Preview**
   - The Components sidebar named each group after its first component, so it read "Table › Table" → groups are named for their job (Data views, Text entry, Loading, Dropdowns…), Filter bar and Sorting have their own View controls group, and typing a group's name shows all of it.
   - Component headers showed the package version under every title → the version label is removed.
+  - Component headers showed the custom element's tag under the description → the tag is removed; it stays in each page's Properties tab.
   - Component example prompts described a specific preview and included its code → each variation offers the same general component guidance, with React and HTML examples still available in their tabs.
   - Page titles showed category labels and started at different heights → titles share the same position without those labels, and component pages no longer show a separate import code block under Usage.
   - The preview downloaded every component's examples and all five icon packs before showing anything → a page loads only the examples it shows, an icon pack loads when someone picks it, and the theme fonts no longer hold up the first paint.
@@ -289,6 +299,9 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
   E2E runs rebuilt and served the shared `preview/dist/`, so another session building in the same checkout deleted files from under a running suite → each run serves its own build of the current sources (reused when one already exists), and builds in one checkout wait for each other instead of overlapping.
 
 ### Fixed
+
+- **[Drag and drop](#/drag-drop)**
+  Drag previews now appear under the pointer as soon as dragging starts.
 
 - **[Popover](#/popover)** and **[Menu](#/menu)**
   A long popover or menu could run past the bottom or top of the window → it stops at the room beside its trigger (or the window's height) and scrolls inside.

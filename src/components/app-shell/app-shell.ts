@@ -36,8 +36,25 @@ export const appShellResizeClass = "ayy-app-shell__resize";
 export const appShellResizeDetailClass = "ayy-app-shell__resize--detail";
 export const appShellResizingClass = "ayy-app-shell--resizing";
 
+export const appShellContainedClass = "ayy-app-shell--contained";
+export const appShellFloatingClass = "ayy-app-shell--floating";
+export const appShellHeaderClass = "ayy-app-shell--header";
+export const appShellRailClass = "ayy-app-shell__rail";
+
 export const appShellSizes = ["sm", "md", "lg"] as const;
 export type AppShellSize = (typeof appShellSizes)[number];
+
+/** How the shell's parts sit on the page on wide screens. Docked is the sidebar on the edge, with no modifier. */
+export const appShellLayouts = ["docked", "contained", "floating", "header"] as const;
+export type AppShellLayout = (typeof appShellLayouts)[number];
+
+/** The class for a layout type, or undefined for docked. */
+export function appShellLayoutClass(layout?: AppShellLayout): string | undefined {
+  if (layout === "contained") return appShellContainedClass;
+  if (layout === "floating") return appShellFloatingClass;
+  if (layout === "header") return appShellHeaderClass;
+  return undefined;
+}
 
 /** SVG markup for the menu icon (Hugeicons Menu01) the toggle draws, for non-React renderers. */
 export const appShellMenuIcon = /* @__PURE__ */ iconSvg(Menu01Icon, { name: "menu" });
@@ -79,6 +96,21 @@ export function syncAppShellToggle(toggle: HTMLElement, collapsed: boolean): voi
   const bubbleLabel = bubble?.getAttribute(state);
   if (bubble && bubbleLabel) bubble.textContent = bubbleLabel;
   toggle.setAttribute("aria-expanded", String(!collapsed));
+}
+
+/** The header and floating layouts show the __bar on wide screens too. */
+const hasWideBar = (shell: HTMLElement) => shell.classList.contains(appShellHeaderClass) || shell.classList.contains(appShellFloatingClass);
+
+/**
+ * On wide screens a header or floating shell shows its __bar, whose toggle collapses the sidebar, so aria-expanded says
+ * whether the sidebar is open. On phones the same attribute is the drawer's state and belongs to connectAppShell.
+ */
+export function syncAppShellBarToggles(shell: HTMLElement): void {
+  if (shell.ownerDocument.defaultView?.matchMedia?.(DRAWER_QUERY).matches) return;
+  const expanded = hasWideBar(shell) && !shell.classList.contains(appShellCollapsedClass);
+  for (const toggle of Array.from(shell.querySelectorAll<HTMLElement>(`:scope > .${appShellBarClass} .${appShellToggleClass}`))) {
+    toggle.setAttribute("aria-expanded", String(expanded));
+  }
 }
 
 /** Set on the sidebar while the hover preview is held shut after a collapse. */
@@ -138,12 +170,14 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     );
   const sidebar = () => shell.querySelector<HTMLElement>(`:scope > .${appShellSidebarClass}`);
   const sidebarToggles = () => Array.from(shell.querySelectorAll<HTMLElement>(SIDEBAR_TOGGLE_SELECTOR));
-  const isOpen = () => drawerToggles().some((t) => t.getAttribute("aria-expanded") === "true");
+  const anyExpanded = () => drawerToggles().some((t) => t.getAttribute("aria-expanded") === "true");
   const media = typeof shell.ownerDocument.defaultView?.matchMedia === "function"
     ? shell.ownerDocument.defaultView.matchMedia(DRAWER_QUERY)
     : typeof matchMedia === "function"
       ? matchMedia(DRAWER_QUERY)
       : null;
+  // Only phones have a drawer: on wide screens a bar toggle is expanded while the sidebar is open.
+  const isOpen = () => media?.matches !== false && anyExpanded();
   const doc = shell.ownerDocument;
   // The toggle that opened the drawer, so Esc and closing give the focus back to it.
   let opener: HTMLElement | null = null;
@@ -163,8 +197,11 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     }
   }
 
+  syncAppShellBarToggles(shell);
+
   const syncSidebarToggles = (collapsed: boolean) => {
     for (const st of sidebarToggles()) syncAppShellToggle(st, collapsed);
+    syncAppShellBarToggles(shell);
   };
 
   // Collapsing from the sidebar's own toggle leaves the pointer (or focus) on the sidebar, which would open the hover
@@ -266,9 +303,12 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
   };
 
   const onMedia = (event: MediaQueryListEvent) => {
-    if (!event.matches && isOpen()) set(false, { returnFocus: false });
+    if (!event.matches && anyExpanded()) set(false, { returnFocus: false });
     if (!event.matches) {
       syncSidebarToggles(shell.classList.contains(appShellCollapsedClass));
+    } else if (hasWideBar(shell)) {
+      // Narrowing to a phone: the bar toggle goes back to meaning the drawer, which starts closed.
+      for (const button of drawerToggles()) button.setAttribute("aria-expanded", "false");
     }
   };
 
@@ -292,7 +332,11 @@ export function connectAppShell(shell: HTMLElement, options?: ConnectAppShellOpt
     let max = configuredMax;
     // The main area keeps room: whatever the other pane takes is out of the budget too.
     const other = paneOf(edge === "sidebar" ? "detail" : "sidebar");
-    const room = shell.clientWidth - (other && !other.hidden ? other.offsetWidth : 0) - MIN_MAIN;
+    const otherShown = !!other && !other.hidden;
+    const style = getComputedStyle(shell);
+    // A contained or floating shell also spends width on its rail, gutters and the gaps between panels.
+    const chrome = parseFloat(style.paddingInlineStart) + parseFloat(style.paddingInlineEnd) + (parseFloat(style.columnGap) || 0) * (otherShown ? 2 : 1);
+    const room = shell.clientWidth - chrome - (otherShown ? other.offsetWidth : 0) - MIN_MAIN;
     max = Math.min(max, room);
     return [min, Math.max(min, max)];
   };

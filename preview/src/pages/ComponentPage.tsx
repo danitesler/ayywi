@@ -222,19 +222,11 @@ function Accessibility({ c }: { c: ComponentEntry }) {
 
 /** A component's page: a header, then Overview (examples, usage), Properties (the reference) and Accessibility tabs. */
 export function ComponentPage({ component: c, view, renderer }: { component: ComponentEntry; view: ComponentView; renderer: Renderer }) {
-  const tags = [...(c.element ? [c.element.tag] : []), ...(c.elements ?? []).map((e) => e.tag)].filter((t, i, all) => all.indexOf(t) === i);
   return (
     <article className="pv-page">
       <header className="pv-page__header pv-page__header--center">
         <h1 className="ayy-h2">{c.name}</h1>
         <p className="ayy-lede">{c.description}</p>
-        {tags.length > 0 && (
-          <p className="pv-page__meta ayy-muted">
-            {tags.map((t) => (
-              <span key={t} className="ayy-mono">{`<${t}>`}</span>
-            ))}
-          </p>
-        )}
       </header>
 
       <Tabs

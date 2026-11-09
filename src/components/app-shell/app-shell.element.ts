@@ -2,28 +2,34 @@ import { ElementBase, emit } from "../../lib/element";
 import {
   appShellClass,
   appShellCollapsedClass,
+  appShellContainedClass,
+  appShellFloatingClass,
+  appShellHeaderClass,
   appShellHoverPreviewClass,
   appShellMdClass,
   appShellSidebarClass,
   appShellSmClass,
   appShellToggleClass,
   connectAppShell,
+  syncAppShellBarToggles,
   syncAppShellToggle,
 } from "./app-shell";
 
 /**
- * <ayy-app-shell [collapsed] [hover-preview] [size]> — wraps a `.ayy-app-shell` and wires its interactions:
+ * <ayy-app-shell [collapsed] [hover-preview] [size] [layout]> — wraps a `.ayy-app-shell` and wires its interactions:
  * - On phones: the `.ayy-app-shell__toggle` in the `.ayy-app-shell__bar` or bottom nav opens and closes the drawer.
  * - On wide screens: collapses to an icon rail when `collapsed` is set, and a toggle collapses/expands the sidebar.
  * - Hovering or focusing the collapsed sidebar expands it as an overlay preview; on by default, hover-preview="false" turns it off.
  * - `size="sm" | "md" | "lg"` sets the sidebar row size (matching Button's sm/md/lg scale); "lg" is the default.
+ * - `layout="docked" | "contained" | "floating" | "header"` sets how the parts sit on wide screens; "docked" is the default.
  * - A `.ayy-app-shell__resize` handle drags the sidebar's width, an `.ayy-app-shell__resize--detail` one the detail pane's.
  * Fires "ayy-collapse-change" ({ collapsed }) when toggled and "ayy-resize" ({ edge, width }) when a resize ends.
  */
 export class AyyAppShellElement extends ElementBase {
-  static observedAttributes = ["collapsed", "hover-preview", "size"];
+  static observedAttributes = ["collapsed", "hover-preview", "size", "layout"];
   #cleanup: (() => void) | null = null;
   #lastCollapsed: boolean | null = null;
+  #layoutSet = false;
 
   get collapsed(): boolean {
     return this.hasAttribute("collapsed");
@@ -48,6 +54,13 @@ export class AyyAppShellElement extends ElementBase {
   }
   set size(value: string) {
     this.setAttribute("size", value);
+  }
+
+  get layout(): string {
+    return this.getAttribute("layout") || "docked";
+  }
+  set layout(value: string) {
+    this.setAttribute("layout", value);
   }
 
   get shell(): HTMLElement | null {
@@ -99,7 +112,15 @@ export class AyyAppShellElement extends ElementBase {
       shell.classList.toggle(appShellSmClass, this.size === "sm");
       shell.classList.toggle(appShellMdClass, this.size === "md");
     }
+    // Only once layout has been set, so a hand-written layout modifier survives.
+    this.#layoutSet ||= this.hasAttribute("layout");
+    if (this.#layoutSet) {
+      shell.classList.toggle(appShellContainedClass, this.layout === "contained");
+      shell.classList.toggle(appShellFloatingClass, this.layout === "floating");
+      shell.classList.toggle(appShellHeaderClass, this.layout === "header");
+    }
     const toggles = shell.querySelectorAll<HTMLElement>(`:scope > .${appShellSidebarClass} .${appShellToggleClass}`);
     for (const toggle of toggles) syncAppShellToggle(toggle, this.collapsed);
+    syncAppShellBarToggles(shell);
   }
 }

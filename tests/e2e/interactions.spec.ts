@@ -20,8 +20,115 @@ async function pgSwitch(page: Page, name: string, on: boolean) {
 /** The playground shell both renderers show: grouped nav, phone bar and bottom nav, detail pane and resize handles. */
 const pgShell = (page: Page) => example(page, "playground").locator(".ayy-app-shell").first();
 
+/** Switches the playground's layout type: the Props select in React, the element's attribute in HTML. */
+async function pgLayout(page: Page, renderer: "react" | "html", layout: string) {
+  if (renderer === "html") {
+    await pgShell(page).evaluate((el, value) => el.closest("ayy-app-shell")!.setAttribute("layout", value), layout);
+    return;
+  }
+  const ex = page.locator('.pv-example[aria-labelledby="ex-playground"]');
+  const popover = ex.locator(".pv-props-popover");
+  if (!(await popover.isVisible())) await ex.getByRole("button", { name: "Props" }).click();
+  await popover.getByLabel("Layout types").selectOption(layout);
+  await page.keyboard.press("Escape");
+  await expect(popover).toBeHidden();
+}
+
 for (const renderer of ["react", "html"] as const) {
   test.describe(renderer, () => {
+    test("app shell layout types place their parts on wide screens and leave phones alone", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await open(page, "app-shell", { renderer });
+      const shell = pgShell(page);
+      const sidebar = shell.locator(":scope > .ayy-app-shell__sidebar");
+      const main = shell.locator(":scope > .ayy-app-shell__main");
+      const rail = shell.locator(":scope > .ayy-app-shell__rail");
+      const bar = shell.locator(":scope > .ayy-app-shell__bar");
+      const box = async (l: Locator) => (await l.boundingBox())!;
+
+      // Docked: none of the other layouts' parts.
+      await expect(rail).toBeHidden();
+      await expect(bar).toBeHidden();
+
+      await pgLayout(page, renderer, "contained");
+      await expect(shell).toHaveClass(/ayy-app-shell--contained/);
+      await expect(rail).toBeVisible();
+      await expect.poll(async () => (await box(rail)).x + (await box(rail)).width).toBeLessThanOrEqual((await box(sidebar)).x);
+      expect(await main.evaluate((el) => parseFloat(getComputedStyle(el).borderStartStartRadius))).toBeGreaterThan(0);
+      await expect(rail.getByRole("link", { name: "Projects" })).toBeVisible();
+
+      // What the rail holds isn't repeated beside it; the phone drawer, with no rail, keeps it.
+      const mark = sidebar.locator(":scope > .ayy-app-shell__head > .ayy-app-shell__brand > svg");
+      const footer = sidebar.locator(":scope > .ayy-app-shell__footer");
+      await expect(mark).toBeHidden();
+      await expect(footer).toBeHidden();
+      await page.setViewportSize({ width: 390, height: 800 });
+      await expect(rail).toBeHidden();
+      expect(await footer.evaluate((el) => getComputedStyle(el).display)).not.toBe("none");
+      await page.setViewportSize({ width: 1280, height: 800 });
+      // The docs page around the example reflows after a resize; measure once it has.
+      await expect.poll(async () => (await box(shell)).width - (await box(main)).width).toBeGreaterThan(100);
+
+      await pgLayout(page, renderer, "floating");
+      await expect(shell).toHaveClass(/ayy-app-shell--floating/);
+      await expect(rail).toBeHidden();
+      await expect(bar).toBeVisible();
+      await expect(shell.locator(":scope > .ayy-app-shell__resize").first()).toBeVisible();
+      await expect(sidebar.locator(":scope > .ayy-app-shell__head")).toBeHidden();
+      await expect.poll(async () => (await box(main)).width - (await box(shell)).width).toBe(0);
+      const frame = await box(shell);
+      const floatingBar = await box(bar);
+      const side = await box(sidebar);
+      expect(floatingBar.width).toBeLessThan(frame.width);
+      expect(await bar.evaluate((el) => parseFloat(getComputedStyle(el).borderStartStartRadius))).toBeGreaterThan(0);
+      expect(side.y).toBeGreaterThanOrEqual(floatingBar.y + floatingBar.height);
+      // The main area is the shared background, and its content starts clear of the bar and the sidebar.
+      const heading = main.getByRole("heading", { name: "Dashboard" });
+      await expect.poll(async () => (await box(heading)).x).toBeGreaterThanOrEqual(side.x + side.width);
+      expect((await box(heading)).y).toBeGreaterThanOrEqual(floatingBar.y + floatingBar.height);
+
+      const barToggle = bar.locator(".ayy-app-shell__toggle");
+      await expect(barToggle).toHaveAttribute("aria-expanded", "true");
+      await barToggle.click();
+      await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+      await expect.poll(async () => (await box(sidebar)).width).toBeLessThan(side.width);
+      // Minimized or not, the sidebar fills the height under the bar.
+      expect((await box(sidebar)).height).toBe(side.height);
+      expect(side.y + side.height).toBeCloseTo(frame.y + frame.height - (floatingBar.x - frame.x), 0);
+      await expect(sidebar.getByRole("link", { name: "Inbox" }).locator("svg")).toBeVisible();
+      await barToggle.click();
+      await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
+
+      await pgLayout(page, renderer, "header");
+      await expect(shell).toHaveClass(/ayy-app-shell--header/);
+      await expect(bar).toBeVisible();
+      await expect(sidebar.locator(":scope > .ayy-app-shell__head")).toBeHidden();
+      await expect.poll(async () => (await box(bar)).width - (await box(shell)).width).toBe(0);
+      expect((await box(sidebar)).y).toBeGreaterThanOrEqual((await box(bar)).y + (await box(bar)).height);
+
+      // The bar's toggle collapses the sidebar here, and its state follows.
+      const toggle = bar.locator(".ayy-app-shell__toggle");
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await toggle.click();
+      await expect(shell).toHaveClass(/ayy-app-shell--collapsed/);
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(shell.locator(":scope > .ayy-app-shell__main")).not.toHaveAttribute("inert", "");
+      await toggle.click();
+      await expect(shell).not.toHaveClass(/ayy-app-shell--collapsed/);
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+
+      // On a phone the same toggle is the drawer's, which starts closed.
+      await page.setViewportSize({ width: 390, height: 800 });
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await expect(sidebar).toBeHidden();
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      await expect(sidebar).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await page.setViewportSize({ width: 1280, height: 720 });
+    });
+
     test("app shell collapse toggles with the keyboard, the sub-list indents, and phones drop nested items", async ({ page }) => {
       await open(page, "app-shell", { renderer });
       // The row layout needs no phone chrome: drop the bar and the bottom nav (switches in React, nodes in HTML).

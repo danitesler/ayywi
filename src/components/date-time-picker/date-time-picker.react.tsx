@@ -81,6 +81,12 @@ export interface DatePickerPreset {
 // ============================================================================
 
 export interface DatePickerGridProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+  /** Start on a month or year grid instead of days. */
+  initialView?: "months" | "years";
+  /** Replace the interactive heading with a static title, for a standalone period picker. */
+  periodTitle?: string;
+  /** Called when a month or year is chosen, with the first day of the resulting month. */
+  onPeriodSelect?: (month: string) => void;
   /** The picked day, "2026-10-07". null for none. */
   value?: string | null;
   defaultValue?: string | null;
@@ -121,6 +127,9 @@ export interface DatePickerGridProps extends Omit<HTMLAttributes<HTMLDivElement>
 export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePickerGridProps>(function DatePickerGrid(
   {
     value,
+    initialView,
+    periodTitle,
+    onPeriodSelect,
     defaultValue = null,
     onValueChange,
     min,
@@ -149,7 +158,7 @@ export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePic
   const selected = value === undefined ? uncontrolled : value;
   const [cursor, setCursor] = useState(selected ?? today);
   const [month, setMonth] = useState(() => startOfMonth(selected ?? today));
-  const [view, setView] = useState<DatePickerView>("days");
+  const [view, setView] = useState<DatePickerView>(initialView ?? "days");
   const [yearPageStart, setYearPageStart] = useState(() => datePickerYearPageStart(Number((selected ?? today).slice(0, 4))));
   const rootRef = useRef<HTMLDivElement>(null);
   const grid = useRef<HTMLDivElement>(null);
@@ -176,7 +185,7 @@ export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePic
     if (!selected) return;
     setCursor(selected);
     setMonth(startOfMonth(selected));
-    setView("days");
+    setView(initialView ?? "days");
   }, [selected]);
 
   useEffect(() => {
@@ -222,6 +231,7 @@ export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePic
 
   const onCellKeyDown = (event: KeyboardEvent<HTMLButtonElement>, idx: number) => {
     if (event.key === "Escape") {
+      if (periodTitle) return;
       event.preventDefault();
       event.stopPropagation();
       const prevView = view;
@@ -315,7 +325,7 @@ export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePic
       )}
       <div className="ayy-date-picker-grid__header">
         <h2 id={titleId} className="ayy-date-picker-grid__title" aria-live="polite">
-          {view === "years" ? (
+          {periodTitle ? periodTitle : view === "years" ? (
             <span>
               <button
                 type="button"
@@ -417,7 +427,8 @@ export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePic
                 focusTarget.current = { type: "cursor" };
                 setMonth(m.month);
                 setCursor(m.month);
-                setView("days");
+                if (!periodTitle) setView("days");
+                onPeriodSelect?.(m.month);
               }}
             >
               {m.label}
@@ -445,7 +456,8 @@ export const DatePickerGrid = /* @__PURE__ */ forwardRef<HTMLDivElement, DatePic
                 focusTarget.current = { type: "cursor" };
                 setMonth(nextMonth);
                 setCursor(nextMonth);
-                setView("days");
+                if (!periodTitle) setView("days");
+                onPeriodSelect?.(nextMonth);
               }}
             >
               {y.label}

@@ -1,8 +1,10 @@
 import { useState, useEffect, type CSSProperties, type ReactNode } from "react";
 import {
+  Calendar03Icon,
   DashboardSquare01Icon,
   Database01Icon,
   Folder01Icon,
+  InboxIcon,
   Layers01Icon,
   Invoice01Icon,
   KeyboardIcon,
@@ -29,6 +31,7 @@ import {
   AppShellLink,
   AppShellMain,
   AppShellNav,
+  AppShellRail,
   AppShellResize,
   AppShellSidebar,
   AppShellSublist,
@@ -53,7 +56,9 @@ import {
   SettingsRow,
   Stat,
   Switch,
+  Tooltip,
   TopBar,
+  type AppShellLayout,
   type AppShellSize,
   type BottomNavSize,
 } from "@danitesler/ayywi/react";
@@ -77,6 +82,15 @@ const SETTINGS_GROUPS = [
   },
 ];
 
+const layoutOptions = (
+  <>
+    <option value="docked">Docked</option>
+    <option value="contained">Contained</option>
+    <option value="floating">Floating</option>
+    <option value="header">Header</option>
+  </>
+);
+
 export default function Example({
   device = "desktop",
   setControls,
@@ -86,6 +100,7 @@ export default function Example({
 } = {}) {
   const [standaloneDevice, setStandaloneDevice] = useState<"desktop" | "tablet" | "mobile">((device as any) || "desktop");
   const [size, setSize] = useState<AppShellSize>("md");
+  const [layout, setLayout] = useState<AppShellLayout>("docked");
   const [collapsed, setCollapsed] = useState(false);
   const [hover, setHover] = useState(true);
   const [showBar, setShowBar] = useState(true);
@@ -171,6 +186,20 @@ export default function Example({
         <div className="ayy-stack">
           <div className="ayy-stack">
             <div className="ayy-spread">
+              <Label htmlFor="pg-layout">Layout types</Label>
+              <div style={{ inlineSize: "7.5rem" }}>
+                <Select
+                  id="pg-layout"
+                  size="sm"
+                  aria-label="Layout types"
+                  value={layout}
+                  onChange={(e) => setLayout(e.target.value as AppShellLayout)}
+                >
+                  {layoutOptions}
+                </Select>
+              </div>
+            </div>
+            <div className="ayy-spread">
               <Label htmlFor="pg-size">Sidebar size</Label>
               <div style={{ inlineSize: "7.5rem" }}>
                 <Select
@@ -214,6 +243,7 @@ export default function Example({
     setControls,
     activeDevice,
     size,
+    layout,
     collapsed,
     hover,
     showBar,
@@ -295,6 +325,14 @@ export default function Example({
           ) : (
             <>
               <Field inline>
+                <Label htmlFor="pg-layout">Layout types</Label>
+                <div style={{ inlineSize: "7.5rem" }}>
+                  <Select id="pg-layout" size="sm" value={layout} onChange={(e) => setLayout(e.target.value as AppShellLayout)}>
+                    {layoutOptions}
+                  </Select>
+                </div>
+              </Field>
+              <Field inline>
                 <Label htmlFor="pg-size">Sidebar size</Label>
                 <div style={{ inlineSize: "7.5rem" }}>
                   <Select
@@ -339,6 +377,7 @@ export default function Example({
         <AppShell
           key={String(resizable)}
           size={size === "lg" ? undefined : size}
+          layout={layout}
           collapsed={collapsed}
           onCollapseChange={setCollapsed}
           hoverPreview={hover}
@@ -354,6 +393,34 @@ export default function Example({
               </Button>
             </AppShellBar>
           ) : null}
+          {/* Only the contained layout shows the rail. */}
+          <AppShellRail>
+            <AppShellBrand href="#home" aria-label="Northwind">
+              <Icon icon={Layers01Icon} name="layers" />
+            </AppShellBrand>
+            <Tooltip side="end" content="Dashboard">
+              <AppShellLink href="#dashboard" aria-current="true" aria-label="Dashboard">
+                <Icon icon={DashboardSquare01Icon} name="layout-dashboard" />
+              </AppShellLink>
+            </Tooltip>
+            <Tooltip side="end" content="Projects">
+              <AppShellLink href="#projects" aria-label="Projects">
+                <Icon icon={Folder01Icon} name="folder" />
+              </AppShellLink>
+            </Tooltip>
+            <Tooltip side="end" content="Team">
+              <AppShellLink href="#team" aria-label="Team">
+                <Icon icon={UserGroupIcon} name="users-group" />
+              </AppShellLink>
+            </Tooltip>
+            <AppShellFooter>
+              <Tooltip side="end" content="Settings">
+                <AppShellLink href="#settings" aria-label="Settings">
+                  <Icon icon={Settings02Icon} name="cog" />
+                </AppShellLink>
+              </Tooltip>
+            </AppShellFooter>
+          </AppShellRail>
           <AppShellSidebar>
             <AppShellHead>
               {/* The logo: a mark, then a name (or a logotype that only shows while the sidebar is open). In the rail the mark stays and the pointer swaps it for the toggle. */}
@@ -372,6 +439,18 @@ export default function Example({
             {grouped ? (
               <>
                 <AppShellNav aria-label="Docs">
+                  <AppShellLink href="#inbox" title="Inbox">
+                    <Icon icon={InboxIcon} name="inbox" />
+                    <span>Inbox</span>
+                  </AppShellLink>
+                  <AppShellLink href="#updates" title="Updates">
+                    <Icon icon={Notification03Icon} name="bell-2" />
+                    <span>Updates</span>
+                  </AppShellLink>
+                  <AppShellLink href="#calendar" title="Calendar">
+                    <Icon icon={Calendar03Icon} name="calendar" />
+                    <span>Calendar</span>
+                  </AppShellLink>
                   <AppShellGroup label="Start">
                     <AppShellItem>
                       <AppShellLink href="#overview">Overview</AppShellLink>
@@ -426,7 +505,7 @@ export default function Example({
               </>
             ) : (
               <>
-                <AppShellNav>
+                <AppShellNav aria-label="Pages">
                   <AppShellLink href="#dashboard" current title="Dashboard">
                     <Icon icon={DashboardSquare01Icon} name="layout-dashboard" />
                     <span>Dashboard</span>
@@ -493,6 +572,7 @@ export default function Example({
       <p className="ayy-muted">
         Narrow the window below 48rem for phones: the bar and the bottom nav appear, and the sidebar becomes a drawer.
         Without a bar or a bottom nav the sidebar is one sideways row, unless Drawer on phones makes it a drawer instead.
+        Layout types change wide screens only.
       </p>
       <Dialog>
         <DialogTrigger variant="outline">

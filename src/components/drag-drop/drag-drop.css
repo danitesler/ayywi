@@ -190,6 +190,7 @@
   box-shadow: var(--ayy-shadow-lift);
   cursor: grabbing;
   will-change: transform;
+  transition: none;
   transform: translate(var(--_x, 0px), var(--_y, 0px)) scale(1.02);
 }
 
