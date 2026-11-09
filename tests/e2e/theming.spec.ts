@@ -168,6 +168,7 @@ test("dark is the near-black theme, dark-contrast is pure black, light-gray grey
   expect(await read()).toEqual({ bg: "rgb(0, 0, 0)", text: "rgb(255, 255, 255)", scheme: "dark" });
   await open(page, "", { theme: "light-gray" });
   expect(await read()).toEqual({ bg: "rgb(235, 235, 235)", text: "rgb(10, 10, 10)", scheme: "light" });
+  await open(page, "components/card", { theme: "light-gray" });
   expect(await page.locator(".ayy-card").first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(255, 255, 255)");
 });
 

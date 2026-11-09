@@ -23,6 +23,17 @@ for (const renderer of ["react", "html"] as const) {
 
 const FOUNDATIONS = { density: "Density", colors: "Colors", typography: "Typography", spacing: "Spacing & sizing", elevation: "Radius & elevation", motion: "Motion", illustration: "Illustration", icons: "Icons" };
 
+test("home animation follows reduced motion changes", async ({ page }) => {
+  await open(page, "");
+  const canvas = page.locator(".pv-home-hero-bg canvas");
+  await expect(canvas).toBeVisible();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.waitForTimeout(300);
+  const still = await canvas.evaluate((el: HTMLCanvasElement) => el.toDataURL());
+  await page.waitForTimeout(300);
+  expect(await canvas.evaluate((el: HTMLCanvasElement) => el.toDataURL())).toBe(still);
+});
+
 test("get started and foundation pages render under Docs", async ({ page }) => {
   const errors = await open(page, "docs/get-started");
   // One flow: the quick-start prompt; the codebase setup sits under it.
@@ -37,25 +48,6 @@ test("get started and foundation pages render under Docs", async ({ page }) => {
   await expect(page.locator(".pv-theme")).toHaveCount(4);
   for (const category of manifest.tokens.map((t: { category?: string }) => t.category).filter(Boolean)) {
     await expect(page.getByRole("heading", { level: 2, name: category, exact: true })).toBeVisible();
-  }
-  expect(errors).toEqual([]);
-});
-
-test("the home page's agent setup switches between the four ways in, at one height", async ({ page }) => {
-  const errors = await open(page, "");
-  const block = page.locator(".pv-agent-setup");
-  await expect(block.getByRole("tab", { name: "Quick start" })).toHaveAttribute("aria-selected", "true");
-  const height = () => block.locator(".pv-code").evaluate((el) => el.getBoundingClientRect().height);
-  expect(await height()).toBe(320);
-  for (const [name, copy] of [
-    ["npm package", "Copy prompt"],
-    ["No build", "Copy prompt"],
-    ["By hand", "Copy"],
-  ]) {
-    await block.getByRole("tab", { name, exact: true }).click();
-    await expect(block.getByRole("tab", { name, exact: true })).toHaveAttribute("aria-selected", "true");
-    await expect(block.getByRole("button", { name: copy, exact: true })).toBeVisible();
-    expect(await height(), name).toBe(320);
   }
   expect(errors).toEqual([]);
 });

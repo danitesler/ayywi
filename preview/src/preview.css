@@ -1197,16 +1197,23 @@
   margin-inline: auto;
 }
 
-.pv-wide--home .pv-landing > .pv-apps {
-  inline-size: 100%;
-}
-
 .pv-page__header--center {
   align-items: center;
   max-inline-size: 48rem;
   margin-inline: auto;
   margin-block-end: var(--ayy-space-6);
   text-align: center;
+}
+
+/* The Get started explainer: three short paragraphs with room between them. */
+.pv-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-6);
+}
+
+.pv-intro p {
+  margin: 0;
 }
 
 .pv-page__header--center .ayy-lede {
@@ -1224,79 +1231,9 @@
   }
 }
 
-/* ---- Home ---- */
-
+/* ---- Home, Thumb and the Themes page's small demo app ---- */
 .pv-landing {
   gap: 0;
-}
-
-.pv-hero--center {
-  align-items: center;
-  gap: var(--ayy-space-4);
-  padding-block: var(--ayy-space-12) var(--ayy-space-10);
-  text-align: center;
-}
-
-.pv-hero--center .ayy-lede {
-  max-inline-size: 40rem;
-  text-wrap: balance;
-}
-
-.pv-hero .pv-hero__mark {
-  font-size: clamp(4rem, 15vw, 9rem);
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  color: var(--ayy-color-primary);
-}
-
-.pv-hero__actions {
-  justify-content: center;
-}
-
-.pv-hero__meta {
-  font-size: var(--ayy-text-s);
-}
-
-/* Real components, small, in three staggered columns that fade out at the bottom. */
-.pv-collage {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--ayy-space-4);
-  max-block-size: 36rem;
-  margin-block-end: var(--ayy-space-12);
-  overflow: hidden;
-  mask-image: linear-gradient(to bottom, var(--ayy-color-text) 65%, transparent);
-}
-
-.pv-collage__column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-4);
-  min-inline-size: 0;
-}
-
-.pv-collage__column:nth-child(2) {
-  margin-block-start: var(--ayy-space-10);
-}
-
-.pv-collage__tile {
-  min-block-size: 12rem;
-  padding: var(--ayy-space-4);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-surface);
-  overflow: hidden;
-}
-
-@media (max-width: 48rem) {
-  .pv-collage {
-    grid-template-columns: minmax(0, 1fr);
-    max-block-size: 26rem;
-  }
-
-  .pv-collage__column:not(:first-child) {
-    display: none;
-  }
 }
 
 /* A live example, drawn small (see Thumb). */
@@ -1315,70 +1252,7 @@
   flex: none;
 }
 
-.pv-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-  align-items: center;
-  gap: var(--ayy-space-10);
-  padding-block: var(--ayy-space-12);
-  border-block-start: 1px solid var(--ayy-color-hairline);
-}
-
-.pv-feature__text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--ayy-space-3);
-}
-
-.pv-feature__text :is(h2, p) {
-  margin: 0;
-}
-
-.pv-feature__visual {
-  min-inline-size: 0;
-  padding: var(--ayy-space-6);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-surface);
-}
-
-@media (min-width: 48.001rem) {
-  .pv-feature:nth-of-type(even) .pv-feature__visual {
-    order: -1;
-  }
-}
-
-@media (max-width: 48rem) {
-  .pv-feature {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--ayy-space-6);
-    padding-block: var(--ayy-space-10);
-  }
-}
-
-/* Home: the agent setup, where tabs pick the path and the code stays one height (320px) so it doesn't jump. */
-.pv-agent-setup .ayy-tabs__panel {
-  min-inline-size: 0;
-}
-
-.pv-agent-setup .pv-code {
-  block-size: 20rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.pv-agent-setup .pv-code__bar {
-  flex: none;
-}
-
-.pv-agent-setup .pv-code__pre {
-  flex: 1;
-  min-block-size: 0;
-  max-block-size: none;
-  overflow-y: auto;
-}
-
+/* The small app the Themes page previews a draft in (BrandApp). */
 .pv-brand-demo {
   display: flex;
   flex-direction: column;
@@ -1430,165 +1304,6 @@
   flex: 1;
   max-inline-size: 12rem;
   block-size: 2.5rem;
-}
-
-.pv-feature__thumbs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--ayy-space-3);
-}
-
-.pv-feature__thumbs > .pv-thumb {
-  block-size: 8rem;
-  padding: var(--ayy-space-3);
-  border-radius: var(--ayy-radius-lg);
-  background-color: var(--ayy-color-wash);
-}
-
-/* ---- Home: every example, full width, scrolling on its own ---- */
-
-.pv-apps {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-8);
-  padding-block: var(--ayy-space-12);
-  border-block-start: 1px solid var(--ayy-color-hairline);
-}
-
-.pv-apps__head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--ayy-space-3);
-  max-inline-size: 44rem;
-  margin-inline: auto;
-  padding-inline: var(--_pv-pad, var(--ayy-space-6));
-  text-align: center;
-}
-
-.pv-apps__head :is(h2, p) {
-  margin: 0;
-}
-
-.pv-apps__scroll {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ayy-space-4);
-}
-
-/* The screenshots run off both edges: the fade says the row keeps going. Gradient overlays rather than a mask, so
-   scrolling doesn't repaint a masked layer every frame. */
-.pv-apps__viewport {
-  position: relative;
-  overflow: hidden;
-}
-
-.pv-apps__viewport::before,
-.pv-apps__viewport::after {
-  content: "";
-  position: absolute;
-  inset-block: 0;
-  inline-size: var(--ayy-space-10);
-  pointer-events: none;
-  background-image: linear-gradient(var(--_pv-fade, to right), var(--ayy-color-bg), transparent);
-}
-
-.pv-apps__viewport::before {
-  inset-inline-start: 0;
-}
-
-.pv-apps__viewport::after {
-  --_pv-fade: to left;
-  inset-inline-end: 0;
-}
-
-/* The start edge is the end edge in RTL. */
-:where([dir="rtl"]) .pv-apps__viewport::before {
-  --_pv-fade: to left;
-}
-
-:where([dir="rtl"]) .pv-apps__viewport::after {
-  --_pv-fade: to right;
-}
-
-.pv-apps__strip {
-  display: flex;
-  gap: var(--ayy-space-4);
-  padding-block: var(--ayy-space-2);
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-}
-
-.pv-apps__strip::-webkit-scrollbar {
-  display: none;
-}
-
-.pv-apps__strip:focus-visible {
-  outline: 2px solid var(--ayy-color-ring);
-  outline-offset: -2px;
-}
-
-.pv-apps__controls {
-  display: flex;
-  justify-content: center;
-  gap: var(--ayy-space-2);
-}
-
-.pv-apps__row {
-  display: flex;
-  flex: none;
-  gap: var(--ayy-space-4);
-}
-
-.pv-apps__shot {
-  flex: none;
-  inline-size: min(24rem, 80vw);
-}
-
-.pv-apps__shot > img {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-lg);
-  transition: border-color var(--ayy-duration-fast) var(--ayy-ease-standard);
-}
-
-.pv-apps__shot:is(:hover, :focus-visible) > img {
-  border-color: var(--ayy-color-line-hover);
-}
-
-@media (max-width: 48rem) {
-  .pv-apps {
-    gap: var(--ayy-space-6);
-    padding-block: var(--ayy-space-10);
-  }
-}
-
-.pv-closing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--ayy-space-4);
-  margin-block-start: var(--ayy-space-8);
-  padding: var(--ayy-space-12) var(--ayy-space-6);
-  border: 1px solid var(--ayy-color-line);
-  border-radius: var(--ayy-radius-card);
-  background-color: var(--ayy-color-surface);
-  text-align: center;
-}
-
-.pv-closing :is(h2, p) {
-  margin: 0;
-}
-
-@media (forced-colors: active) {
-  .pv-collage__tile,
-  .pv-feature__visual,
-  .pv-closing {
-    border-color: CanvasText;
-  }
 }
 
 /* ---- Components: overview grid and tabbed pages ---- */

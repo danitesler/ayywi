@@ -67,7 +67,7 @@ All notable changes to ayywi. Semver: renaming or removing a class, token or pro
 - **Preview**
   - No design principles → a Principles page under Docs with five rows (agent-first, cross-platform, adaptive, customizable, built for what's next), each with a pointer spotlight and a small sketch that plays on hover.
   - No guidance for illustrations → an Illustration page under Foundations: where these sketches belong and where they don't, how to draw them, how they move, and a timeline of one sketch's beats.
-  - No home page → a home page at the site root: what ayywi is, a collage of live components, what themes, components, agent setup and the example apps offer, and a footer.
+  - No home page → a home page at the site root: a prompt types itself while the app it describes is built from real components, three apps in turn (a release tracker, an analytics dashboard and a coffee shop), over waves of pixels whose colour drifts through the theme colours and themes the app being built in step, with the footer below.
   - Components had no overview → `#/components` shows every component as a live card, grouped by category.
 
 - **[Card](#/card)**

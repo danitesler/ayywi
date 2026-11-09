@@ -38,7 +38,8 @@ import { ComponentsOverview } from "./pages/Components";
 import { densityPage, DensityPage } from "./pages/Density";
 import { foundations, foundationText } from "./pages/Foundations";
 import { getStarted, GetStartedPage } from "./pages/GetStarted";
-import { Landing, SiteFooter } from "./pages/Landing";
+import { Home } from "./pages/Home";
+import { SiteFooter } from "./pages/SiteFooter";
 import { NotFound } from "./pages/NotFound";
 import { principlesPage, PrinciplesPage } from "./pages/Principles";
 import { showcase, ShowcasePage } from "./pages/Showcase";
@@ -377,7 +378,7 @@ export function App() {
   let title = "";
   switch (route.tab) {
     case "home":
-      page = <Landing onSearch={() => setSearchOpen(true)} />;
+      page = <Home />;
       break;
     case "docs": {
       const foundation = foundations.find((f) => f.route === route.page);

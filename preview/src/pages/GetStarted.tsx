@@ -155,7 +155,16 @@ export function GetStartedPage() {
     <article className="pv-page pv-page--compact">
       <header className="pv-page__header pv-page__header--center">
         <h1 className="ayy-h2">Get started</h1>
-        <p className="ayy-lede">Paste one prompt; your AI asks the rest. Dark mode and phones included.</p>
+        <div className="pv-intro">
+          <p className="ayy-lede">
+            ayywi is a design system of plain CSS classes and design tokens, with React components and custom elements, so the same
+            markup works in any framework or plain HTML.
+          </p>
+          <p className="ayy-lede">
+            Use it by pasting one prompt into an AI builder such as Lovable, Bolt or v0, adding the npm package to your codebase, or
+            loading it from a CDN with no build.
+          </p>
+        </div>
       </header>
 
       <QuickStart />

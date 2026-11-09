@@ -34,6 +34,8 @@ export function canonical(path: string): string {
   const [first = "", second, ...rest] = path.split("/");
   switch (first) {
     case "":
+    case "home":
+      // The draft home pages (#/home/a …) were folded into the home page.
       return "";
     case "docs":
       return second ? path : "docs/get-started";

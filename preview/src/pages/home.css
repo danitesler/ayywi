@@ -1,0 +1,551 @@
+/* The home page: a prompt types itself while the app it describes is built. Scoped under .pv-home-*. */
+
+.pv-home {
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  overflow-x: clip;
+}
+
+.pv-home-center {
+  justify-content: center;
+}
+
+.pv-home-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ayy-space-5);
+  padding-block: var(--ayy-space-2) var(--ayy-space-6);
+  text-align: center;
+}
+
+.pv-home-hero--tight {
+  padding-block-end: var(--ayy-space-12);
+}
+
+.pv-home-hero__title {
+  margin: 0;
+  max-inline-size: 18ch;
+  font-family: var(--ayy-font-heading);
+  font-size: clamp(2.5rem, 7.2vw, 5.25rem);
+  font-weight: var(--ayy-weight-bold);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.pv-home-hero__title--mark {
+  max-inline-size: none;
+  font-size: clamp(4rem, 15vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--ayy-color-primary);
+}
+
+.pv-home-hero__tagline {
+  margin: 0;
+  font-family: var(--ayy-font-heading);
+  font-size: var(--ayy-text-2xl);
+  font-weight: var(--ayy-weight-semibold);
+  text-wrap: balance;
+}
+
+@keyframes pv-home-sheen {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+/* What shipped lately, drifting. */
+
+/* ---- B: paste a prompt, watch the app build ---- */
+
+.pv-home-win {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.5fr) minmax(0, 1.5fr);
+  block-size: max(36rem, 64svh);
+  grid-template-rows: minmax(0, 1fr);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-3xl);
+  /* See-through, so the pixels behind the hero show in the top of the window. */
+  background-color: color-mix(in oklab, var(--ayy-color-surface) 55%, transparent);
+  box-shadow: var(--ayy-shadow-lift);
+  overflow: hidden;
+}
+
+/* The window lines up with the footer's content: the same container width and side padding. */
+
+.pv-wide--home .pv-home > .pv-home-win {
+  --_pv-home-side: var(--ayy-space-6);
+  inline-size: min(calc(100% - 2 * var(--_pv-home-side)), calc(var(--ayy-size-container) - 2 * var(--_pv-home-side)));
+}
+
+@media (max-width: 64rem) {
+  .pv-wide--home .pv-home > .pv-home-win {
+    --_pv-home-side: var(--ayy-space-4);
+  }
+}
+
+.pv-home-win__stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.pv-home-win__stage > .pv-home-built {
+  flex: 1;
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.pv-home-win__pane {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-4);
+  min-inline-size: 0;
+  min-block-size: 0;
+  overflow: hidden;
+  padding: var(--ayy-space-6);
+}
+
+.pv-home-win__pane--preview {
+  border-inline-start: 1px solid var(--ayy-color-line);
+  background-color: color-mix(in oklab, var(--ayy-color-bg) 55%, transparent);
+  color: var(--ayy-color-text);
+  transition: background-color var(--ayy-duration-slow) var(--ayy-ease-standard);
+}
+
+.pv-home-win__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-s);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.pv-home-win__prompt {
+  min-block-size: 7rem;
+  margin: 0;
+  font-family: var(--ayy-font-mono);
+  font-size: var(--ayy-text-lg);
+  line-height: 1.5;
+}
+
+.pv-home-caret {
+  display: inline-block;
+  inline-size: 0.5ch;
+  block-size: 1.1em;
+  margin-inline-start: 1px;
+  background-color: var(--ayy-color-primary);
+  vertical-align: text-bottom;
+  animation: pv-home-blink 1s steps(2, jump-none) infinite;
+}
+
+.pv-home-caret[data-done] {
+  opacity: 0.6;
+}
+
+@keyframes pv-home-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.pv-home-win__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  margin: 0;
+  margin-block-start: auto;
+  padding: 0;
+  list-style: none;
+  color: var(--ayy-color-muted);
+  font-size: var(--ayy-text-sm);
+}
+
+.pv-home-win__steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--ayy-space-2);
+  transition: color var(--ayy-duration-base) var(--ayy-ease-standard);
+}
+
+.pv-home-win__steps li[data-state] {
+  color: var(--ayy-color-text);
+}
+
+.pv-home-win__tick {
+  position: relative;
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border: 1.5px solid var(--ayy-color-line-strong);
+  border-radius: var(--ayy-radius-pill);
+  transition:
+  background-color var(--ayy-duration-base) var(--ayy-ease-standard),
+  border-color var(--ayy-duration-base) var(--ayy-ease-standard);
+}
+
+li[data-state="active"] > .pv-home-win__tick {
+  border-color: var(--ayy-color-primary);
+  animation: pv-home-pulse 1.1s ease-out infinite;
+}
+
+li[data-state="done"] > .pv-home-win__tick {
+  border-color: var(--ayy-color-primary);
+  background-color: var(--ayy-color-primary);
+}
+
+li[data-state="done"] > .pv-home-win__tick::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.12rem;
+  inset-inline-start: 0.32rem;
+  inline-size: 0.28rem;
+  block-size: 0.52rem;
+  border: solid var(--ayy-color-primary-fg);
+  border-width: 0 2px 2px 0;
+  rotate: 45deg;
+}
+
+@keyframes pv-home-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ayy-color-primary) 50%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 0.5rem transparent;
+  }
+}
+
+.pv-home-hero__actions {
+  margin-block-start: var(--ayy-space-2);
+}
+
+/* The app that gets built, in four beats driven by data-phase. */
+
+.pv-home-built {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  min-block-size: 18rem;
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-card);
+  background-color: var(--ayy-color-surface);
+  font-size: var(--ayy-text-sm);
+  overflow: hidden;
+}
+
+.pv-home-built__skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-3);
+  padding: var(--ayy-space-5);
+  background-color: var(--ayy-color-surface);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ayy-duration-slow) var(--ayy-ease-standard);
+}
+
+.pv-home-built[data-phase="1"] .pv-home-built__skeleton {
+  opacity: 1;
+}
+
+.pv-home-built__skeleton span {
+  inline-size: var(--w, 100%);
+  block-size: var(--h, 1rem);
+  border-radius: var(--ayy-radius-sm);
+  background-image: linear-gradient(
+  100deg,
+  var(--ayy-color-wash) 30%,
+  color-mix(in oklab, var(--ayy-color-text) 10%, transparent) 50%,
+  var(--ayy-color-wash) 70%
+  );
+  background-size: 250% 100%;
+  animation: pv-home-sheen 1.6s linear infinite;
+}
+
+.pv-home-built__side,
+.pv-home-built__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  padding: var(--ayy-space-4);
+  opacity: 0;
+  translate: 0 0.75rem;
+  transition:
+  opacity 500ms var(--ayy-ease-out-expo),
+  translate 500ms var(--ayy-ease-out-expo);
+}
+
+.pv-home-built__side {
+  border-inline-end: 1px solid var(--ayy-color-hairline);
+}
+
+.pv-home-built__main {
+  gap: var(--ayy-space-4);
+  transition-delay: 120ms;
+}
+
+.pv-home-built:is([data-phase="2"], [data-phase="3"], [data-phase="4"]) :is(.pv-home-built__side, .pv-home-built__main) {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.pv-home-built__side span {
+  padding: var(--ayy-space-1-5) var(--ayy-space-2);
+  border-radius: var(--ayy-radius-control);
+  color: var(--ayy-color-text-soft);
+}
+
+.pv-home-built__side span[data-current] {
+  background-color: var(--ayy-color-wash);
+  color: var(--ayy-color-text);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.pv-home-built__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-3);
+}
+
+.pv-home-built__cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ayy-space-3);
+}
+
+.pv-home-built__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ayy-space-2);
+  min-inline-size: 0;
+}
+
+.pv-home-built__col-title {
+  color: var(--ayy-color-text-soft);
+  font-size: var(--ayy-text-xs);
+  font-weight: var(--ayy-weight-medium);
+}
+
+.pv-home-built__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ayy-space-1-5);
+  padding: var(--ayy-space-3);
+  border: 1px solid var(--ayy-color-line);
+  border-radius: var(--ayy-radius-md);
+  background-color: var(--ayy-color-surface-raised);
+  opacity: 0;
+  scale: 0.9;
+  translate: 0 0.6rem;
+  transition:
+  opacity 450ms var(--ayy-ease-out-expo) calc(var(--i, 0) * 110ms),
+  scale 550ms var(--ayy-ease-spring) calc(var(--i, 0) * 110ms),
+  translate 550ms var(--ayy-ease-spring) calc(var(--i, 0) * 110ms);
+}
+
+.pv-home-built:is([data-phase="3"], [data-phase="4"]) .pv-home-built__card {
+  opacity: 1;
+  scale: 1;
+  translate: 0 0;
+}
+
+.pv-home-built__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ayy-space-3);
+  margin-block-start: auto;
+  font-size: var(--ayy-text-xs);
+  opacity: 0;
+  transition: opacity 500ms var(--ayy-ease-standard) 200ms;
+}
+
+.pv-home-built[data-phase="4"] .pv-home-built__foot {
+  opacity: 1;
+}
+
+@media (max-width: 48rem) {
+  .pv-home-win {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: var(--ayy-radius-xl);
+  }
+
+  .pv-home-win__pane--preview {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--ayy-color-line);
+  }
+
+  .pv-home-built {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pv-home-built__side {
+    display: none;
+  }
+
+  .pv-home-built__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pv-home-built__col:nth-child(3) {
+    display: none;
+  }
+}
+
+/* A hardcoded colour is caught, then fixed. The two states stack and trade places. */
+
+/* Each column rises at its own pace while the wall scrolls past. Wrapped so reduced motion keeps it still. */
+
+/* ---- B: bento ---- */
+
+/* Three contexts of one panel, fanned; they spread on hover and bob on their own. */
+
+/* The same row at sm, md and lg; a highlight steps down the rows. */
+
+/* Icon buttons get a tooltip wrapper, so the pair is placed as a row, not by absolute offsets on each button. */
+
+/* ---- motion preferences ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  .pv-home-caret,
+  .pv-home-built__skeleton span {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .pv-home-win__tick {
+    forced-color-adjust: none;
+  }
+}
+
+/* Behind the hero: a field of small squares that swell and fade in slow waves (drawn on a canvas, see PixelWaves). */
+
+.pv-wide--home .pv-home > .pv-home-hero-bg {
+  inline-size: 100%;
+  margin-inline: 0;
+}
+
+.pv-home-hero-bg {
+  /* Starts at the top of the window: it reaches up behind the header and over the page's top padding. */
+  position: absolute;
+  inset-block-start: calc(-1 * (var(--ayy-size-header) + var(--ayy-space-10)));
+  inset-inline: 0;
+  z-index: -1;
+  block-size: calc(52rem + var(--ayy-size-header) + var(--ayy-space-10));
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, var(--ayy-color-text) 60%, transparent);
+}
+
+@media (max-width: 48rem) {
+  .pv-home-hero-bg {
+    inset-block-start: calc(-1 * (var(--ayy-size-header) + var(--ayy-space-6)));
+    block-size: calc(52rem + var(--ayy-size-header) + var(--ayy-space-6));
+  }
+}
+
+.pv-home-hero-bg > canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--ayy-color-text);
+}
+
+/* Other apps in the hero window: a dashboard and a store. */
+
+.pv-home-built[data-kind="store"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pv-home-built[data-kind="store"] .pv-home-built__side {
+  display: none;
+}
+
+.pv-home-built__kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ayy-space-3);
+}
+
+.pv-home-built__kpis .pv-home-built__card {
+  align-items: stretch;
+}
+
+.pv-home-built__chart {
+  align-items: stretch;
+}
+
+.pv-home-built__spark {
+  inline-size: 100%;
+  block-size: 9rem;
+}
+
+.pv-home-built__products {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ayy-space-3);
+}
+
+.pv-home-built__product {
+  align-items: stretch;
+}
+
+.pv-home-built__swatch {
+  block-size: 3.25rem;
+  border-radius: var(--ayy-radius-sm);
+  background-color: color-mix(in oklab, var(--spot) 40%, var(--ayy-color-wash));
+}
+
+.pv-home-built__price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ayy-space-2);
+  margin-block-start: var(--ayy-space-1);
+  font-weight: var(--ayy-weight-semibold);
+}
+
+@media (max-width: 48rem) {
+  .pv-home-built__kpis,
+  .pv-home-built__products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pv-home-built__kpis .pv-home-built__card:nth-child(3),
+  .pv-home-built__product:nth-child(n + 5) {
+    display: none;
+  }
+}
+
+/* On phones the two panes stack, so the window can't be one fixed height: the app gets a fixed box instead. */
+@media (max-width: 48rem) {
+  .pv-home-win {
+    block-size: auto;
+    grid-template-rows: none;
+  }
+
+  .pv-home-win__stage {
+    block-size: 28rem;
+    flex: none;
+  }
+}
+
+
+/* On the home page the header is more see-through, so the pixels show behind it (it still blurs what scrolls under it). */
+body:has(.pv-home) .pv-header {
+  --ayy-color-glass: color-mix(in oklab, var(--ayy-color-bg) 45%, transparent);
+}
